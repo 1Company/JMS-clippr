@@ -64,14 +64,13 @@ function LoginForm() {
 
         <div>
           <label htmlFor="password" className="block text-sm font-medium mb-1">
-            Wachtwoord
+            Wachtwoord <span className="text-muted-foreground font-normal">(optioneel)</span>
           </label>
           <input
             id="password"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            required
             className="w-full px-3 py-2 rounded-md border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
             placeholder="••••••••"
           />
@@ -95,10 +94,6 @@ function LoginForm() {
         </p>
       </div>
 
-      <div className="mt-4 p-3 rounded-md bg-muted text-xs">
-        <p className="font-medium">🧪 Development Mode</p>
-        <p>Gebruik wachtwoord: <code className="bg-background px-1 rounded">demo</code></p>
-      </div>
     </div>
   );
 }

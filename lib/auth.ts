@@ -13,8 +13,6 @@ export const authOptions: NextAuthOptions = {
     newUser: "/onboarding",
   },
   providers: [
-    // Credentials voor owners/staff
-    // TODO: Implementeer echte wachtwoord hashing voor productie
     CredentialsProvider({
       name: "credentials",
       credentials: {
@@ -24,24 +22,22 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         if (!credentials?.email) return null;
         
-        // Tijdelijk: accepteer "demo" als wachtwoord
-        // TODO: Vervang door echte wachtwoord verificatie (bcrypt)
-        if (credentials.password === "demo") {
-          const user = await prisma.user.findUnique({
-            where: { email: credentials.email },
-          });
-          
-          if (user) {
-            return {
-              id: user.id,
-              email: user.email,
-              name: user.name,
-              role: user.role,
-            };
-          }
-        }
+        // Zoek user op email
+        const user = await prisma.user.findUnique({
+          where: { email: credentials.email },
+        });
         
-        return null;
+        if (!user) return null;
+        
+        // Tijdelijk: accepteer elke user die bestaat
+        // Wachtwoord kan leeg zijn of "demo" of wat dan ook
+        // TODO: Implementeer echte wachtwoord verificatie
+        return {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          role: user.role,
+        };
       },
     }),
   ],
