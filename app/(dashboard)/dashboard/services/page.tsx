@@ -9,22 +9,15 @@ export default async function ServicesPage() {
   const session = await getServerSession(authOptions);
   if (!session?.user) redirect("/login");
 
-  const salon = await prisma.salon.findFirst({
-    where: { ownerId: session.user.id },
-  });
-
+  const salon = await prisma.salon.findFirst({ where: { ownerId: session.user.id } });
   if (!salon) redirect("/onboarding");
 
   const services = await prisma.service.findMany({
     where: { salonId: salon.id },
     include: {
       category: true,
-      staff: {
-        include: { staff: true },
-      },
-      _count: {
-        select: { bookings: true },
-      },
+      staff: { include: { staff: true } },
+      _count: { select: { bookings: true } },
     },
     orderBy: [{ category: { sortOrder: "asc" } }, { sortOrder: "asc" }],
   });
@@ -40,22 +33,19 @@ export default async function ServicesPage() {
   });
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
+    <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold">Behandelingen</h1>
-        <p className="text-muted-foreground">Beheer je diensten en prijzen</p>
+        <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Behandelingen</h1>
+        <p className="text-muted-foreground mt-1">Beheer je diensten en prijzen</p>
       </div>
 
-      {/* Add Service Form */}
       <AddServiceForm salonId={salon.id} categories={categories} staff={staff} />
 
-      {/* Services List */}
       {services.length === 0 ? (
-        <div className="bg-card rounded-lg border p-8 text-center">
-          <p className="text-3xl mb-4">✨</p>
-          <h3 className="font-semibold mb-2">Nog geen behandelingen</h3>
-          <p className="text-muted-foreground text-sm">
+        <div className="bg-white rounded-3xl border p-12 text-center">
+          <div className="text-5xl mb-4 opacity-40">✨</div>
+          <h3 className="font-bold text-lg mb-1">Nog geen behandelingen</h3>
+          <p className="text-muted-foreground text-sm max-w-xs mx-auto">
             Voeg je eerste behandeling toe zodat klanten kunnen boeken
           </p>
         </div>
