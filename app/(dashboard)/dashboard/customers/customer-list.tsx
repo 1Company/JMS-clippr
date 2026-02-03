@@ -61,7 +61,7 @@ export function CustomerList({ customers }: { customers: Customer[] }) {
                 <div className="p-4 sm:p-5">
                   <div className="flex items-start gap-3">
                     {/* Avatar */}
-                    <div className="w-10 h-10 rounded-xl bg-violet-50 text-violet-600 flex items-center justify-center font-semibold text-sm shrink-0">
+                    <div className="w-10 h-10 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center font-semibold text-sm shrink-0">
                       {customer.name
                         .split(" ")
                         .map((n) => n[0])

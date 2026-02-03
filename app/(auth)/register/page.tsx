@@ -83,7 +83,7 @@ export default function RegisterPage() {
                     s.num < step 
                       ? "bg-emerald-500 text-white" 
                       : s.num === step 
-                        ? "gradient-primary text-white shadow-sm shadow-violet-500/20" 
+                        ? "gradient-primary text-white shadow-sm shadow-teal-500/20" 
                         : "bg-muted text-muted-foreground"
                   }`}>
                     {s.num < step ? (
@@ -133,7 +133,7 @@ export default function RegisterPage() {
                   type="button"
                   onClick={() => formData.salonName && setStep(2)}
                   disabled={!formData.salonName}
-                  className="w-full py-3.5 px-4 rounded-xl gradient-primary text-white font-semibold hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-violet-500/20 hover:shadow-violet-500/30 hover:-translate-y-px active:translate-y-0 flex items-center justify-center gap-2"
+                  className="w-full py-3.5 px-4 rounded-xl gradient-primary text-white font-semibold hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-teal-500/20 hover:shadow-teal-500/30 hover:-translate-y-px active:translate-y-0 flex items-center justify-center gap-2"
                 >
                   Volgende
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
@@ -198,7 +198,7 @@ export default function RegisterPage() {
                   <button
                     type="submit"
                     disabled={loading || !formData.name || !formData.email}
-                    className="flex-1 py-3.5 px-4 rounded-xl gradient-primary text-white font-semibold hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-violet-500/20 hover:shadow-violet-500/30 hover:-translate-y-px active:translate-y-0 flex items-center justify-center gap-2"
+                    className="flex-1 py-3.5 px-4 rounded-xl gradient-primary text-white font-semibold hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-teal-500/20 hover:shadow-teal-500/30 hover:-translate-y-px active:translate-y-0 flex items-center justify-center gap-2"
                   >
                     {loading ? (
                       <>
@@ -216,7 +216,7 @@ export default function RegisterPage() {
         <div className="text-center mt-6 space-y-2 animate-fade-in-up" style={{ animationDelay: '200ms' }}>
           <p className="text-sm text-muted-foreground">
             Al een account?{" "}
-            <Link href="/login" className="text-violet-600 font-medium hover:text-violet-700 underline underline-offset-4 decoration-violet-200 hover:decoration-violet-400">
+            <Link href="/login" className="text-teal-600 font-medium hover:text-teal-700 underline underline-offset-4 decoration-teal-200 hover:decoration-teal-400">
               Inloggen
             </Link>
           </p>

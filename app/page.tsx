@@ -103,7 +103,7 @@ export default function Home() {
             <Link href="/login" className="text-sm font-medium text-muted-foreground hover:text-foreground px-4 py-2 rounded-lg hover:bg-muted/80">
               Inloggen
             </Link>
-            <Link href="/register" className="text-sm font-semibold text-white gradient-primary px-5 py-2.5 rounded-xl hover:opacity-90 shadow-lg shadow-violet-500/20 hover:shadow-violet-500/30 hover:-translate-y-px active:translate-y-0">
+            <Link href="/register" className="text-sm font-semibold text-white gradient-primary px-5 py-2.5 rounded-xl hover:opacity-90 shadow-lg shadow-teal-500/20 hover:shadow-teal-500/30 hover:-translate-y-px active:translate-y-0">
               Gratis Starten
             </Link>
           </div>
@@ -112,18 +112,18 @@ export default function Home() {
 
       {/* ===== HERO ===== */}
       <section className="relative pt-32 pb-24 px-6">
-        {/* Background - pink to violet gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-pink-50 to-violet-50" />
+        {/* Background - teal to cyan gradient */}
+        <div className="absolute inset-0 bg-gradient-to-br from-cyan-50 to-teal-50" />
         <div className="absolute inset-0 gradient-mesh" />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-gradient-to-b from-pink-100/40 via-violet-100/30 to-transparent rounded-full blur-3xl opacity-60" />
-        <div className="absolute top-20 right-0 w-96 h-96 bg-violet-100/30 rounded-full blur-3xl" />
-        <div className="absolute top-60 left-0 w-72 h-72 bg-pink-100/25 rounded-full blur-3xl" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-gradient-to-b from-cyan-100/40 via-teal-100/30 to-transparent rounded-full blur-3xl opacity-60" />
+        <div className="absolute top-20 right-0 w-96 h-96 bg-teal-100/30 rounded-full blur-3xl" />
+        <div className="absolute top-60 left-0 w-72 h-72 bg-cyan-100/25 rounded-full blur-3xl" />
 
         <div className="relative max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2.5 bg-white/80 backdrop-blur-sm text-violet-700 px-4 py-2 rounded-full text-sm font-medium mb-8 border border-violet-100/80 shadow-soft animate-fade-in-up">
+          <div className="inline-flex items-center gap-2.5 bg-white/80 backdrop-blur-sm text-teal-700 px-4 py-2 rounded-full text-sm font-medium mb-8 border border-teal-100/80 shadow-soft animate-fade-in-up">
             <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-violet-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-violet-500" />
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-teal-500" />
             </span>
             Nu beschikbaar voor salons in Nederland
           </div>
@@ -142,7 +142,7 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up" style={{ animationDelay: '300ms' }}>
             <Link
               href="/register"
-              className="group inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl text-white gradient-primary font-semibold text-lg hover:opacity-90 shadow-xl shadow-violet-500/25 hover:shadow-violet-500/35 hover:-translate-y-0.5 active:translate-y-0"
+              className="group inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl text-white gradient-primary font-semibold text-lg hover:opacity-90 shadow-xl shadow-teal-500/25 hover:shadow-teal-500/35 hover:-translate-y-0.5 active:translate-y-0"
             >
               Start Gratis
               <svg className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
@@ -196,7 +196,7 @@ export default function Home() {
       <section id="features" className="py-24 px-6">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <p className="text-sm font-semibold text-violet-600 mb-3 uppercase tracking-wider">Features</p>
+            <p className="text-sm font-semibold text-teal-600 mb-3 uppercase tracking-wider">Features</p>
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-balance">
               Alles wat je salon nodig heeft
             </h2>
@@ -209,10 +209,10 @@ export default function Home() {
             {features.map((feature) => (
               <Card
                 key={feature.title}
-                className="group w-full md:w-[calc(50%-10px)] lg:w-[calc(33.333%-14px)] hover:border-violet-200/80 hover:shadow-elevated hover:-translate-y-1 transition-all duration-300"
+                className="group w-full md:w-[calc(50%-10px)] lg:w-[calc(33.333%-14px)] hover:border-teal-200/80 hover:shadow-elevated hover:-translate-y-1 transition-all duration-300"
               >
                 <CardContent className="p-6">
-                  <div className="w-11 h-11 rounded-xl bg-violet-50 text-violet-600 flex items-center justify-center mb-4 group-hover:bg-violet-100 group-hover:scale-105 transition-all duration-300">
+                  <div className="w-11 h-11 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center mb-4 group-hover:bg-teal-100 group-hover:scale-105 transition-all duration-300">
                     {feature.icon}
                   </div>
                   <h3 className="text-base font-semibold mb-2">{feature.title}</h3>
@@ -228,7 +228,7 @@ export default function Home() {
       <section className="py-24 px-6 bg-muted/30 border-y">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-16">
-            <p className="text-sm font-semibold text-violet-600 mb-3 uppercase tracking-wider">Hoe het werkt</p>
+            <p className="text-sm font-semibold text-teal-600 mb-3 uppercase tracking-wider">Hoe het werkt</p>
             <h2 className="text-3xl md:text-4xl font-bold mb-4">In 3 stappen klaar</h2>
           </div>
 
@@ -239,7 +239,7 @@ export default function Home() {
               { step: "03", title: "Ontvang boekingen", desc: "Klanten boeken zelf online. Jij ziet alles in je dashboard en agenda." },
             ].map((item) => (
               <div key={item.step} className="text-center">
-                <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl gradient-primary text-white text-lg font-bold mb-5 shadow-lg shadow-violet-500/20">
+                <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl gradient-primary text-white text-lg font-bold mb-5 shadow-lg shadow-teal-500/20">
                   {item.step}
                 </div>
                 <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
@@ -254,7 +254,7 @@ export default function Home() {
       <section id="pricing" className="py-24 px-6">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-16">
-            <p className="text-sm font-semibold text-violet-600 mb-3 uppercase tracking-wider">Prijzen</p>
+            <p className="text-sm font-semibold text-teal-600 mb-3 uppercase tracking-wider">Prijzen</p>
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Eerlijke, transparante prijzen</h2>
             <p className="text-lg text-muted-foreground">Geen verborgen kosten. Geen commissie. Vaste prijs per maand.</p>
           </div>
@@ -265,12 +265,12 @@ export default function Home() {
                 key={plan.name}
                 className={`relative w-full md:w-1/3 transition-all duration-300 ${
                   plan.highlighted
-                    ? "border-2 border-violet-200 shadow-elevated scale-[1.02] md:scale-105"
-                    : "hover:border-violet-200/60 hover:shadow-medium"
+                    ? "border-2 border-teal-200 shadow-elevated scale-[1.02] md:scale-105"
+                    : "hover:border-teal-200/60 hover:shadow-medium"
                 }`}
               >
                 {plan.highlighted && (
-                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 gradient-primary text-white text-xs font-semibold px-4 py-1 rounded-full shadow-lg shadow-violet-500/20">
+                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 gradient-primary text-white text-xs font-semibold px-4 py-1 rounded-full shadow-lg shadow-teal-500/20">
                     Meest Gekozen
                   </div>
                 )}
@@ -285,8 +285,8 @@ export default function Home() {
                     href="/register"
                     className={`block text-center py-3 rounded-xl font-semibold text-sm transition-all ${
                       plan.highlighted
-                        ? "gradient-primary text-white shadow-lg shadow-violet-500/20 hover:opacity-90 hover:-translate-y-px"
-                        : "border-2 border-border hover:border-violet-200 hover:bg-violet-50"
+                        ? "gradient-primary text-white shadow-lg shadow-teal-500/20 hover:opacity-90 hover:-translate-y-px"
+                        : "border-2 border-border hover:border-teal-200 hover:bg-teal-50"
                     }`}
                   >
                     {plan.highlighted ? "Start Gratis →" : plan.cta}
@@ -294,7 +294,7 @@ export default function Home() {
                   <ul className="mt-6 space-y-3">
                     {plan.features.map((f) => (
                       <li key={f} className="flex items-start gap-2.5 text-sm">
-                        <svg className="w-4 h-4 text-violet-500 mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <svg className="w-4 h-4 text-teal-500 mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                         </svg>
                         <span>{f}</span>
@@ -321,7 +321,7 @@ export default function Home() {
           </p>
           <Link
             href="/register"
-            className="group inline-flex items-center gap-2 px-10 py-4 rounded-2xl text-white gradient-primary font-semibold text-lg hover:opacity-90 shadow-xl shadow-violet-500/25 hover:shadow-violet-500/35 hover:-translate-y-0.5 active:translate-y-0"
+            className="group inline-flex items-center gap-2 px-10 py-4 rounded-2xl text-white gradient-primary font-semibold text-lg hover:opacity-90 shadow-xl shadow-teal-500/25 hover:shadow-teal-500/35 hover:-translate-y-0.5 active:translate-y-0"
           >
             Start Nu — Gratis
             <svg className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
