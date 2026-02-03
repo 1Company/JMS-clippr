@@ -40,22 +40,22 @@
   - [x] Wie kan welke behandeling
   - [ ] Optioneel: aangepaste duur per medewerker (later)
 
-### Fase 3: Beschikbaarheid (Week 2-3) ⬜
-- [ ] Werkrooster beheer
-  - [ ] Per medewerker per dag (ma-zo)
-  - [ ] Begin- en eindtijd
-  - [ ] Pauzes
-- [ ] Vakantie beheer
-  - [ ] Periode invoeren (van-tot)
-  - [ ] Notitie/reden (optioneel)
-  - [ ] Conflict check met bestaande afspraken
-- [ ] Ziekmeldingen
-  - [ ] Ad-hoc ziek melden
-  - [ ] Verwachte terugkeer
-  - [ ] Afspraken herverdelen/annuleren
-- [ ] Salon openingstijden
-  - [ ] Per dag van de week
-  - [ ] Speciale dagen (feestdagen, etc.)
+### Fase 3: Beschikbaarheid (Week 2-3) ✅
+- [x] Werkrooster beheer
+  - [x] Per medewerker per dag (ma-zo)
+  - [x] Begin- en eindtijd
+  - [ ] Pauzes (later)
+- [x] Vakantie beheer
+  - [x] Periode invoeren (van-tot)
+  - [x] Notitie/reden (optioneel)
+  - [x] Getoond in team pagina
+- [x] Ziekmeldingen
+  - [x] Ad-hoc ziek melden
+  - [x] Beter melden functie
+  - [ ] Afspraken herverdelen (later)
+- [x] Salon openingstijden
+  - [x] Per dag van de week
+  - [ ] Speciale dagen (feestdagen) - later
 
 ### Fase 4: Klant Booking (Week 3-4) ✅
 - [x] Publieke booking pagina (/book/[slug])
@@ -71,20 +71,20 @@
 - [ ] Voorkeursmedewerker opslaan - later
 - [ ] Afspraak annuleren/verzetten - later
 
-### Fase 5: Beheerder Agenda (Week 4-5) ⬜
-- [ ] Dashboard overzicht
-  - [ ] Vandaag's afspraken
-  - [ ] Komende afspraken
-  - [ ] Stats (week/maand)
-- [ ] Agenda weergave
-  - [ ] Dag view (alle medewerkers naast elkaar)
-  - [ ] Week view
-  - [ ] Maand view
-- [ ] Handmatig afspraken inplannen
-  - [ ] Ook buiten openingstijden
-  - [ ] Walk-ins toevoegen
-- [ ] Drag & drop afspraken verplaatsen
-- [ ] Klantgeschiedenis bekijken
+### Fase 5: Beheerder Agenda (Week 4-5) ✅
+- [x] Dashboard overzicht
+  - [x] Vandaag's afspraken
+  - [x] Komende afspraken
+  - [x] Stats (vandaag/openstaand)
+- [x] Agenda weergave
+  - [x] Dag view (alle medewerkers naast elkaar)
+  - [x] Week view
+  - [ ] Maand view (later)
+- [x] Handmatig afspraken inplannen
+  - [x] Ook buiten openingstijden
+  - [x] Walk-ins toevoegen (geen email vereist)
+- [ ] Drag & drop afspraken verplaatsen (later)
+- [ ] Klantgeschiedenis bekijken (later)
 
 ### Fase 6: Notificaties (Week 5-6) ⬜
 - [ ] Email notificaties
