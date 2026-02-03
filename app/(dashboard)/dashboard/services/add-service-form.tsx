@@ -50,7 +50,7 @@ export function AddServiceForm({ salonId, categories, staff }: { salonId: string
   if (!isOpen) {
     return (
       <button onClick={() => setIsOpen(true)}
-        className="w-full py-3.5 rounded-xl border-2 border-dashed border-border/60 text-muted-foreground hover:border-violet-300 hover:text-violet-600 hover:bg-violet-50/30 transition-all flex items-center justify-center gap-2 text-sm font-medium">
+        className="w-full py-3.5 rounded-xl border-2 border-dashed border-border/60 text-muted-foreground hover:border-teal-300 hover:text-teal-600 hover:bg-teal-50/30 transition-all flex items-center justify-center gap-2 text-sm font-medium">
         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
         Behandeling toevoegen
       </button>
@@ -123,8 +123,8 @@ export function AddServiceForm({ salonId, categories, staff }: { salonId: string
                 <button key={s.id} type="button" onClick={() => toggleStaff(s.id)}
                   className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${
                     formData.staffIds.includes(s.id)
-                      ? "bg-violet-50 text-violet-700 border-violet-200"
-                      : "border-border/60 text-muted-foreground hover:border-violet-200 hover:text-violet-600"
+                      ? "bg-teal-50 text-teal-700 border-teal-200"
+                      : "border-border/60 text-muted-foreground hover:border-teal-200 hover:text-teal-600"
                   }`}>
                   {s.displayName}
                 </button>
@@ -140,7 +140,7 @@ export function AddServiceForm({ salonId, categories, staff }: { salonId: string
             Annuleren
           </button>
           <button type="submit" disabled={loading || !formData.name || !formData.price}
-            className="flex-1 py-2.5 px-4 rounded-xl gradient-primary text-white text-sm font-semibold hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm shadow-violet-500/20 flex items-center justify-center gap-2">
+            className="flex-1 py-2.5 px-4 rounded-xl gradient-primary text-white text-sm font-semibold hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm shadow-teal-500/20 flex items-center justify-center gap-2">
             {loading ? (
               <>
                 <svg className="animate-spin h-3.5 w-3.5" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>

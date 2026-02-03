@@ -53,7 +53,7 @@ export function SidebarNav({
       {/* Salon info */}
       <div className="px-4 py-4 border-b border-border/30">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg gradient-primary flex items-center justify-center text-white text-xs font-bold shadow-sm shadow-violet-500/20 shrink-0">
+          <div className="w-8 h-8 rounded-lg gradient-primary flex items-center justify-center text-white text-xs font-bold shadow-sm shadow-teal-500/20 shrink-0">
             {salonName.charAt(0)}
           </div>
           <div className="min-w-0">
@@ -77,14 +77,14 @@ export function SidebarNav({
               href={item.href}
               className={`flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
                 isActive
-                  ? "bg-violet-50 text-violet-700"
+                  ? "bg-teal-50 text-teal-700"
                   : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
               }`}
             >
               <span className="text-base">{item.icon}</span>
               {item.label}
               {isActive && (
-                <div className="ml-auto w-1.5 h-1.5 rounded-full bg-violet-500" />
+                <div className="ml-auto w-1.5 h-1.5 rounded-full bg-teal-500" />
               )}
             </Link>
           );

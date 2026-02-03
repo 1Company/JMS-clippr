@@ -94,7 +94,7 @@ export function BookingWizard({ salon, servicesByCategory, staff, openingHours }
           </div>
         </div>
 
-        <button onClick={() => window.location.reload()} className="text-violet-600 hover:text-violet-700 text-sm font-medium underline underline-offset-4 decoration-violet-200 hover:decoration-violet-400">
+        <button onClick={() => window.location.reload()} className="text-teal-600 hover:text-teal-700 text-sm font-medium underline underline-offset-4 decoration-teal-200 hover:decoration-teal-400">
           Nog een afspraak maken →
         </button>
       </div>
@@ -108,7 +108,7 @@ export function BookingWizard({ salon, servicesByCategory, staff, openingHours }
         {STEPS.map((label, i) => (
           <div key={label} className="flex-1">
             <div className={`h-1 rounded-full mb-1.5 transition-all duration-500 ${i + 1 <= step ? "gradient-primary" : "bg-border/60"}`} />
-            <span className={`text-[10px] font-medium hidden sm:block ${i + 1 <= step ? "text-violet-600" : "text-muted-foreground/60"}`}>{label}</span>
+            <span className={`text-[10px] font-medium hidden sm:block ${i + 1 <= step ? "text-teal-600" : "text-muted-foreground/60"}`}>{label}</span>
           </div>
         ))}
       </div>
@@ -130,9 +130,9 @@ export function BookingWizard({ salon, servicesByCategory, staff, openingHours }
               <div className="space-y-1.5">
                 {services.map((service) => (
                   <button key={service.id} onClick={() => { setSelectedService(service); setStep(2); }}
-                    className="w-full p-4 rounded-xl bg-white border border-border/40 hover:border-violet-200 hover:shadow-medium transition-all text-left flex justify-between items-center group">
+                    className="w-full p-4 rounded-xl bg-white border border-border/40 hover:border-teal-200 hover:shadow-medium transition-all text-left flex justify-between items-center group">
                     <div>
-                      <p className="font-semibold text-sm group-hover:text-violet-700 transition-colors">{service.name}</p>
+                      <p className="font-semibold text-sm group-hover:text-teal-700 transition-colors">{service.name}</p>
                       {service.description && <p className="text-xs text-muted-foreground mt-0.5">{service.description}</p>}
                       <p className="text-[10px] text-muted-foreground mt-1 flex items-center gap-1">
                         <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
@@ -141,7 +141,7 @@ export function BookingWizard({ salon, servicesByCategory, staff, openingHours }
                     </div>
                     <div className="text-right shrink-0 ml-4">
                       <p className="text-base font-bold tabular-nums">€{Number(service.price).toFixed(2)}</p>
-                      <span className="text-violet-500 opacity-0 group-hover:opacity-100 transition-opacity text-xs flex items-center gap-0.5 justify-end">
+                      <span className="text-teal-500 opacity-0 group-hover:opacity-100 transition-opacity text-xs flex items-center gap-0.5 justify-end">
                         Kies
                         <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
                       </span>
@@ -157,7 +157,7 @@ export function BookingWizard({ salon, servicesByCategory, staff, openingHours }
       {/* Step 2: Staff */}
       {step === 2 && selectedService && (
         <div className="space-y-4 animate-fade-in">
-          <button onClick={() => setStep(1)} className="text-xs text-muted-foreground hover:text-violet-600 font-medium flex items-center gap-1">
+          <button onClick={() => setStep(1)} className="text-xs text-muted-foreground hover:text-teal-600 font-medium flex items-center gap-1">
             <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" /></svg>
             Terug
           </button>
@@ -168,26 +168,26 @@ export function BookingWizard({ salon, servicesByCategory, staff, openingHours }
 
           <div className="space-y-1.5">
             <button onClick={() => { setAnyStaff(true); setSelectedStaff(null); setStep(3); }}
-              className="w-full p-4 rounded-xl bg-white border border-border/40 hover:border-violet-200 hover:shadow-medium transition-all text-left flex items-center gap-3 group">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-100 to-indigo-100 flex items-center justify-center shrink-0">
-                <svg className="w-5 h-5 text-violet-500" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+              className="w-full p-4 rounded-xl bg-white border border-border/40 hover:border-teal-200 hover:shadow-medium transition-all text-left flex items-center gap-3 group">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-100 to-indigo-100 flex items-center justify-center shrink-0">
+                <svg className="w-5 h-5 text-teal-500" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
                 </svg>
               </div>
               <div>
-                <p className="font-semibold text-sm group-hover:text-violet-700 transition-colors">Eerste beschikbaar</p>
+                <p className="font-semibold text-sm group-hover:text-teal-700 transition-colors">Eerste beschikbaar</p>
                 <p className="text-xs text-muted-foreground">Snelste beschikbare tijd</p>
               </div>
             </button>
 
             {availableStaff.map((member) => (
               <button key={member.id} onClick={() => { setSelectedStaff(member); setAnyStaff(false); setStep(3); }}
-                className="w-full p-4 rounded-xl bg-white border border-border/40 hover:border-violet-200 hover:shadow-medium transition-all text-left flex items-center gap-3 group">
+                className="w-full p-4 rounded-xl bg-white border border-border/40 hover:border-teal-200 hover:shadow-medium transition-all text-left flex items-center gap-3 group">
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-sm shadow-sm shrink-0" style={{ backgroundColor: member.color || "#8B5CF6" }}>
                   {member.displayName.charAt(0)}
                 </div>
                 <div>
-                  <p className="font-semibold text-sm group-hover:text-violet-700 transition-colors">{member.displayName}</p>
+                  <p className="font-semibold text-sm group-hover:text-teal-700 transition-colors">{member.displayName}</p>
                 </div>
               </button>
             ))}
@@ -198,7 +198,7 @@ export function BookingWizard({ salon, servicesByCategory, staff, openingHours }
       {/* Step 3: Date & Time */}
       {step === 3 && selectedService && (
         <div className="space-y-4 animate-fade-in">
-          <button onClick={() => setStep(2)} className="text-xs text-muted-foreground hover:text-violet-600 font-medium flex items-center gap-1">
+          <button onClick={() => setStep(2)} className="text-xs text-muted-foreground hover:text-teal-600 font-medium flex items-center gap-1">
             <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" /></svg>
             Terug
           </button>
@@ -216,10 +216,10 @@ export function BookingWizard({ salon, servicesByCategory, staff, openingHours }
               return (
                 <button key={date.toISOString()} onClick={() => !closed && setSelectedDate(date)} disabled={closed}
                   className={`flex-shrink-0 px-2.5 py-2 rounded-xl text-center min-w-[60px] border transition-all ${
-                    selected ? "border-violet-500 bg-violet-500 text-white shadow-lg shadow-violet-500/25" :
+                    selected ? "border-teal-500 bg-teal-500 text-white shadow-lg shadow-teal-500/25" :
                     closed ? "border-transparent bg-muted/30 text-muted-foreground/30 cursor-not-allowed" :
-                    isToday ? "border-violet-200 bg-violet-50 hover:bg-violet-100" :
-                    "border-border/30 bg-white hover:border-violet-200 hover:bg-violet-50/30"
+                    isToday ? "border-teal-200 bg-teal-50 hover:bg-teal-100" :
+                    "border-border/30 bg-white hover:border-teal-200 hover:bg-teal-50/30"
                   }`}>
                   <p className={`text-[9px] uppercase font-semibold tracking-wider ${selected ? "text-white/80" : "opacity-60"}`}>{format(date, "EEE", { locale: nl })}</p>
                   <p className="text-lg font-bold my-px tabular-nums">{format(date, "d")}</p>
@@ -249,8 +249,8 @@ export function BookingWizard({ salon, servicesByCategory, staff, openingHours }
                 <div className="grid grid-cols-3 sm:grid-cols-4 gap-1.5">
                   {availableSlots.map((slot, i) => (
                     <button key={i} onClick={() => { setSelectedSlot(slot); setStep(4); }}
-                      className="py-2.5 px-2 rounded-xl bg-white border border-border/40 hover:border-violet-300 hover:bg-violet-50 transition-all text-center group">
-                      <p className="font-semibold text-sm group-hover:text-violet-700 tabular-nums">{slot.time}</p>
+                      className="py-2.5 px-2 rounded-xl bg-white border border-border/40 hover:border-teal-300 hover:bg-teal-50 transition-all text-center group">
+                      <p className="font-semibold text-sm group-hover:text-teal-700 tabular-nums">{slot.time}</p>
                       {anyStaff && <p className="text-[9px] text-muted-foreground mt-0.5">{slot.staffName}</p>}
                     </button>
                   ))}
@@ -264,7 +264,7 @@ export function BookingWizard({ salon, servicesByCategory, staff, openingHours }
       {/* Step 4: Details */}
       {step === 4 && selectedService && selectedSlot && selectedDate && (
         <div className="space-y-4 animate-fade-in">
-          <button onClick={() => setStep(3)} className="text-xs text-muted-foreground hover:text-violet-600 font-medium flex items-center gap-1">
+          <button onClick={() => setStep(3)} className="text-xs text-muted-foreground hover:text-teal-600 font-medium flex items-center gap-1">
             <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" /></svg>
             Terug
           </button>
@@ -274,14 +274,14 @@ export function BookingWizard({ salon, servicesByCategory, staff, openingHours }
           </div>
 
           {/* Summary Card */}
-          <div className="bg-violet-50/60 rounded-xl p-4 border border-violet-100/50">
+          <div className="bg-teal-50/60 rounded-xl p-4 border border-teal-100/50">
             <div className="flex justify-between items-start">
               <div>
                 <p className="font-semibold text-sm">{selectedService.name}</p>
-                <p className="text-xs text-violet-700 mt-0.5">{format(selectedDate, "EEEE d MMMM", { locale: nl })} om {selectedSlot.time}</p>
-                <p className="text-xs text-violet-600/60">met {selectedSlot.staffName}</p>
+                <p className="text-xs text-teal-700 mt-0.5">{format(selectedDate, "EEEE d MMMM", { locale: nl })} om {selectedSlot.time}</p>
+                <p className="text-xs text-teal-600/60">met {selectedSlot.staffName}</p>
               </div>
-              <p className="text-lg font-bold text-violet-700 tabular-nums">€{Number(selectedService.price).toFixed(2)}</p>
+              <p className="text-lg font-bold text-teal-700 tabular-nums">€{Number(selectedService.price).toFixed(2)}</p>
             </div>
           </div>
 
@@ -317,7 +317,7 @@ export function BookingWizard({ salon, servicesByCategory, staff, openingHours }
           </div>
 
           <button onClick={handleSubmit} disabled={submitting || !formData.name || !formData.email}
-            className="w-full py-3.5 rounded-2xl gradient-primary text-white font-semibold hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed shadow-xl shadow-violet-500/25 hover:shadow-violet-500/35 hover:-translate-y-px active:translate-y-0 flex items-center justify-center gap-2">
+            className="w-full py-3.5 rounded-2xl gradient-primary text-white font-semibold hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed shadow-xl shadow-teal-500/25 hover:shadow-teal-500/35 hover:-translate-y-px active:translate-y-0 flex items-center justify-center gap-2">
             {submitting ? (
               <>
                 <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>

@@ -62,7 +62,7 @@ export default async function BookingPage({ params }: { params: { slug: string }
         <div className="text-center mt-8">
           <p className="text-[10px] text-muted-foreground">
             Mogelijk gemaakt door{" "}
-            <Link href="/" className="text-violet-600 font-medium hover:text-violet-700 underline underline-offset-2 decoration-violet-200">
+            <Link href="/" className="text-teal-600 font-medium hover:text-teal-700 underline underline-offset-2 decoration-teal-200">
               Clippr
             </Link>
           </p>

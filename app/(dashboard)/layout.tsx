@@ -10,7 +10,7 @@ const navItems = [
   { href: "/dashboard/agenda", label: "Agenda", icon: "📅" },
   { href: "/dashboard/team", label: "Team", icon: "👥" },
   { href: "/dashboard/services", label: "Behandelingen", icon: "✨" },
-  { href: "/dashboard/customers", label: "Klanten", icon: "💜" },
+  { href: "/dashboard/customers", label: "Klanten", icon: "🤝" },
 ];
 
 export default async function DashboardLayout({

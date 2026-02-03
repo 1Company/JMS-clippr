@@ -100,13 +100,13 @@ export function AgendaView({
           <div className="flex bg-white border border-border/40 rounded-lg overflow-hidden">
             <button
               onClick={() => view !== "day" && toggleView()}
-              className={`px-3 py-2 text-xs font-medium transition-colors ${view === "day" ? "bg-violet-50 text-violet-700" : "hover:bg-muted/50"}`}
+              className={`px-3 py-2 text-xs font-medium transition-colors ${view === "day" ? "bg-teal-50 text-teal-700" : "hover:bg-muted/50"}`}
             >
               Dag
             </button>
             <button
               onClick={() => view !== "week" && toggleView()}
-              className={`px-3 py-2 text-xs font-medium transition-colors border-l border-border/40 ${view === "week" ? "bg-violet-50 text-violet-700" : "hover:bg-muted/50"}`}
+              className={`px-3 py-2 text-xs font-medium transition-colors border-l border-border/40 ${view === "week" ? "bg-teal-50 text-teal-700" : "hover:bg-muted/50"}`}
             >
               Week
             </button>
@@ -115,7 +115,7 @@ export function AgendaView({
           {/* New booking */}
           <button
             onClick={() => setShowNewBooking(true)}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg gradient-primary text-white text-xs font-semibold hover:opacity-90 shadow-sm shadow-violet-500/20 hover:-translate-y-px active:translate-y-0 transition-all"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg gradient-primary text-white text-xs font-semibold hover:opacity-90 shadow-sm shadow-teal-500/20 hover:-translate-y-px active:translate-y-0 transition-all"
           >
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
             Afspraak
@@ -174,7 +174,7 @@ export function AgendaView({
                       <div
                         key={member.id}
                         className={`relative min-h-[56px] border-r border-border/20 last:border-r-0 transition-colors ${
-                          isOutsideHours ? "bg-muted/30" : isPast ? "bg-muted/10" : "hover:bg-violet-50/30 cursor-pointer"
+                          isOutsideHours ? "bg-muted/30" : isPast ? "bg-muted/10" : "hover:bg-teal-50/30 cursor-pointer"
                         }`}
                         onClick={() => !isOutsideHours && slotBookings.length === 0 && handleSlotClick(member.id, hour, date)}
                       >
@@ -215,9 +215,9 @@ export function AgendaView({
                 const isToday = isSameDay(day, new Date());
 
                 return (
-                  <div key={day.toISOString()} className={`px-2 py-2.5 text-center border-r border-border/30 last:border-r-0 ${isClosed ? "bg-muted/20" : isToday ? "bg-violet-50/60" : "bg-muted/5"}`}>
+                  <div key={day.toISOString()} className={`px-2 py-2.5 text-center border-r border-border/30 last:border-r-0 ${isClosed ? "bg-muted/20" : isToday ? "bg-teal-50/60" : "bg-muted/5"}`}>
                     <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">{format(day, "EEE", { locale: nl })}</p>
-                    <p className={`text-lg font-bold mt-0.5 ${isToday ? "text-violet-600" : isClosed ? "text-muted-foreground/60" : ""}`}>
+                    <p className={`text-lg font-bold mt-0.5 ${isToday ? "text-teal-600" : isClosed ? "text-muted-foreground/60" : ""}`}>
                       {format(day, "d")}
                     </p>
                   </div>

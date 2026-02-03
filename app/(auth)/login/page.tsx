@@ -95,7 +95,7 @@ function LoginForm() {
           <button
             type="submit"
             disabled={loading || !email}
-            className="w-full py-3.5 px-4 rounded-xl gradient-primary text-white font-semibold hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-violet-500/20 hover:shadow-violet-500/30 hover:-translate-y-px active:translate-y-0 flex items-center justify-center gap-2"
+            className="w-full py-3.5 px-4 rounded-xl gradient-primary text-white font-semibold hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-teal-500/20 hover:shadow-teal-500/30 hover:-translate-y-px active:translate-y-0 flex items-center justify-center gap-2"
           >
             {loading ? (
               <>
@@ -147,7 +147,7 @@ export default function LoginPage() {
 
         <p className="text-center text-sm text-muted-foreground mt-6 animate-fade-in-up" style={{ animationDelay: '200ms' }}>
           Nog geen account?{" "}
-          <Link href="/register" className="text-violet-600 font-medium hover:text-violet-700 underline underline-offset-4 decoration-violet-200 hover:decoration-violet-400">
+          <Link href="/register" className="text-teal-600 font-medium hover:text-teal-700 underline underline-offset-4 decoration-teal-200 hover:decoration-teal-400">
             Registreer je salon
           </Link>
         </p>

@@ -54,8 +54,8 @@ export default async function DashboardPage() {
   });
 
   const stats = [
-    { label: "Vandaag", value: todayBookings, icon: "📅", gradient: "from-violet-500 to-purple-600" },
-    { label: "Medewerkers", value: salon.staff.length, icon: "👥", gradient: "from-blue-500 to-indigo-600" },
+    { label: "Vandaag", value: todayBookings, icon: "📅", gradient: "from-teal-500 to-teal-600" },
+    { label: "Medewerkers", value: salon.staff.length, icon: "👥", gradient: "from-blue-500 to-cyan-600" },
     { label: "Behandelingen", value: salon.services.length, icon: "✨", gradient: "from-emerald-500 to-teal-600" },
     { label: "Openstaand", value: salon._count.bookings, icon: "📋", gradient: "from-amber-500 to-orange-600" },
   ];
@@ -79,7 +79,7 @@ export default async function DashboardPage() {
         {setupComplete && salon.slug && (
           <div className="flex items-center gap-2 text-xs">
             <span className="text-muted-foreground">Booking link:</span>
-            <code className="bg-muted/80 px-2.5 py-1 rounded-lg font-mono text-violet-700">clippr.nl/book/{salon.slug}</code>
+            <code className="bg-muted/80 px-2.5 py-1 rounded-lg font-mono text-teal-700">clippr.nl/book/{salon.slug}</code>
           </div>
         )}
       </div>
@@ -102,9 +102,9 @@ export default async function DashboardPage() {
 
       {/* Setup Checklist */}
       {!setupComplete && (
-        <div className="bg-white rounded-xl border border-violet-200/60 p-5 sm:p-6 animate-fade-in-up">
+        <div className="bg-white rounded-xl border border-teal-200/60 p-5 sm:p-6 animate-fade-in-up">
           <div className="flex items-start gap-3 mb-4">
-            <div className="w-9 h-9 rounded-lg gradient-primary flex items-center justify-center text-white text-sm shrink-0 shadow-sm shadow-violet-500/20">
+            <div className="w-9 h-9 rounded-lg gradient-primary flex items-center justify-center text-white text-sm shrink-0 shadow-sm shadow-teal-500/20">
               🚀
             </div>
             <div>
@@ -120,13 +120,13 @@ export default async function DashboardPage() {
                 className={`flex items-center gap-3 p-3.5 rounded-xl transition-all group ${
                   step.done 
                     ? "bg-muted/30" 
-                    : "bg-violet-50/50 hover:bg-violet-50 border border-violet-100/60 hover:border-violet-200/80"
+                    : "bg-teal-50/50 hover:bg-teal-50 border border-teal-100/60 hover:border-teal-200/80"
                 }`}
               >
                 <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
                   step.done
                     ? "bg-emerald-100 text-emerald-600"
-                    : "bg-violet-100 text-violet-600"
+                    : "bg-teal-100 text-teal-600"
                 }`}>
                   {step.done ? (
                     <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
@@ -141,7 +141,7 @@ export default async function DashboardPage() {
                   )}
                 </div>
                 {!step.done && (
-                  <svg className="w-4 h-4 text-violet-400 group-hover:text-violet-600 group-hover:translate-x-0.5 transition-all shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                  <svg className="w-4 h-4 text-teal-400 group-hover:text-teal-600 group-hover:translate-x-0.5 transition-all shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                   </svg>
                 )}
@@ -160,7 +160,7 @@ export default async function DashboardPage() {
           </div>
           <Link
             href="/dashboard/agenda"
-            className="text-xs font-medium text-violet-600 hover:text-violet-700 px-3 py-1.5 rounded-lg hover:bg-violet-50 transition-colors flex items-center gap-1"
+            className="text-xs font-medium text-teal-600 hover:text-teal-700 px-3 py-1.5 rounded-lg hover:bg-teal-50 transition-colors flex items-center gap-1"
           >
             Agenda
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
@@ -180,7 +180,7 @@ export default async function DashboardPage() {
             <p className="text-muted-foreground text-sm mb-5 max-w-[260px] mx-auto">
               Deel je booking link zodat klanten kunnen reserveren
             </p>
-            <code className="bg-muted/60 px-4 py-2 rounded-xl text-sm font-mono text-violet-700 border border-border/40">
+            <code className="bg-muted/60 px-4 py-2 rounded-xl text-sm font-mono text-teal-700 border border-border/40">
               clippr.nl/book/{salon.slug}
             </code>
           </div>
@@ -188,11 +188,11 @@ export default async function DashboardPage() {
           <div className="divide-y divide-border/30">
             {upcomingBookings.map((booking) => (
               <div key={booking.id} className="px-4 sm:px-5 py-3.5 flex items-center gap-3 sm:gap-4 hover:bg-muted/20 transition-colors">
-                <div className="text-center min-w-[52px] py-1.5 px-2 bg-violet-50/80 rounded-xl border border-violet-100/50">
-                  <p className="text-base font-bold text-violet-700 tabular-nums">
+                <div className="text-center min-w-[52px] py-1.5 px-2 bg-teal-50/80 rounded-xl border border-teal-100/50">
+                  <p className="text-base font-bold text-teal-700 tabular-nums">
                     {new Date(booking.startTime).toLocaleTimeString("nl-NL", { hour: "2-digit", minute: "2-digit" })}
                   </p>
-                  <p className="text-[10px] text-violet-600/70 font-medium uppercase tracking-wide">
+                  <p className="text-[10px] text-teal-600/70 font-medium uppercase tracking-wide">
                     {new Date(booking.startTime).toLocaleDateString("nl-NL", { weekday: "short", day: "numeric" })}
                   </p>
                 </div>

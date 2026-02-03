@@ -108,7 +108,7 @@ export function StaffList({ staff, services, salonId }: { staff: Staff[]; servic
                       <span className="text-[10px] text-muted-foreground italic">Geen behandelingen gekoppeld</span>
                     ) : (
                       member.services.map((s) => (
-                        <span key={s.service.id} className="text-[10px] bg-violet-50 text-violet-700 px-2 py-0.5 rounded-md font-medium">
+                        <span key={s.service.id} className="text-[10px] bg-teal-50 text-teal-700 px-2 py-0.5 rounded-md font-medium">
                           {s.service.name}
                         </span>
                       ))
@@ -125,7 +125,7 @@ export function StaffList({ staff, services, salonId }: { staff: Staff[]; servic
                           key={i}
                           className={`text-[9px] w-6 h-6 flex items-center justify-center rounded-md font-medium transition-colors ${
                             isWorking 
-                              ? "bg-violet-50 text-violet-700" 
+                              ? "bg-teal-50 text-teal-700" 
                               : "bg-muted/50 text-muted-foreground/40"
                           }`}
                           title={isWorking ? `${schedule?.startTime}–${schedule?.endTime}` : "Vrij"}
@@ -224,7 +224,7 @@ export function StaffList({ staff, services, salonId }: { staff: Staff[]; servic
                       className="block w-full px-2.5 py-1.5 text-sm rounded-lg border border-border/80 bg-white" />
                   </div>
                   <button onClick={() => handleAddVacation(member.id)} disabled={!vacationData.startDate || !vacationData.endDate}
-                    className="px-3 py-1.5 text-xs font-medium gradient-primary text-white rounded-lg hover:opacity-90 disabled:opacity-50 shadow-sm shadow-violet-500/10">
+                    className="px-3 py-1.5 text-xs font-medium gradient-primary text-white rounded-lg hover:opacity-90 disabled:opacity-50 shadow-sm shadow-teal-500/10">
                     Toevoegen
                   </button>
                   <button onClick={() => setShowVacationForm(null)}
