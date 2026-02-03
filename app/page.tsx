@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Card, CardContent } from "@/components/ui/card";
 
 const features = [
   {
@@ -111,11 +112,12 @@ export default function Home() {
 
       {/* ===== HERO ===== */}
       <section className="relative pt-32 pb-24 px-6">
-        {/* Background */}
+        {/* Background - pink to violet gradient */}
+        <div className="absolute inset-0 bg-gradient-to-br from-pink-50 to-violet-50" />
         <div className="absolute inset-0 gradient-mesh" />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-gradient-to-b from-violet-100/50 to-transparent rounded-full blur-3xl opacity-60" />
-        <div className="absolute top-20 right-0 w-96 h-96 bg-indigo-100/30 rounded-full blur-3xl" />
-        <div className="absolute top-60 left-0 w-72 h-72 bg-purple-100/25 rounded-full blur-3xl" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-gradient-to-b from-pink-100/40 via-violet-100/30 to-transparent rounded-full blur-3xl opacity-60" />
+        <div className="absolute top-20 right-0 w-96 h-96 bg-violet-100/30 rounded-full blur-3xl" />
+        <div className="absolute top-60 left-0 w-72 h-72 bg-pink-100/25 rounded-full blur-3xl" />
 
         <div className="relative max-w-4xl mx-auto text-center">
           <div className="inline-flex items-center gap-2.5 bg-white/80 backdrop-blur-sm text-violet-700 px-4 py-2 rounded-full text-sm font-medium mb-8 border border-violet-100/80 shadow-soft animate-fade-in-up">
@@ -203,18 +205,20 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 stagger-children">
+          <div className="flex flex-wrap justify-center gap-5 stagger-children">
             {features.map((feature) => (
-              <div
+              <Card
                 key={feature.title}
-                className="group relative p-6 rounded-2xl bg-white border border-border/60 hover:border-violet-200/80 hover:shadow-elevated hover:-translate-y-1 transition-all duration-300"
+                className="group w-full md:w-[calc(50%-10px)] lg:w-[calc(33.333%-14px)] hover:border-violet-200/80 hover:shadow-elevated hover:-translate-y-1 transition-all duration-300"
               >
-                <div className="w-11 h-11 rounded-xl bg-violet-50 text-violet-600 flex items-center justify-center mb-4 group-hover:bg-violet-100 group-hover:scale-105 transition-all duration-300">
-                  {feature.icon}
-                </div>
-                <h3 className="text-base font-semibold mb-2">{feature.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{feature.desc}</p>
-              </div>
+                <CardContent className="p-6">
+                  <div className="w-11 h-11 rounded-xl bg-violet-50 text-violet-600 flex items-center justify-center mb-4 group-hover:bg-violet-100 group-hover:scale-105 transition-all duration-300">
+                    {feature.icon}
+                  </div>
+                  <h3 className="text-base font-semibold mb-2">{feature.title}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{feature.desc}</p>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </div>
@@ -255,14 +259,14 @@ export default function Home() {
             <p className="text-lg text-muted-foreground">Geen verborgen kosten. Geen commissie. Vaste prijs per maand.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="flex flex-col md:flex-row justify-center gap-6">
             {pricing.map((plan) => (
-              <div
+              <Card
                 key={plan.name}
-                className={`relative rounded-2xl p-7 transition-all duration-300 ${
+                className={`relative w-full md:w-1/3 transition-all duration-300 ${
                   plan.highlighted
-                    ? "bg-white border-2 border-violet-200 shadow-elevated scale-[1.02] md:scale-105"
-                    : "bg-white border border-border/60 hover:border-violet-200/60 hover:shadow-medium"
+                    ? "border-2 border-violet-200 shadow-elevated scale-[1.02] md:scale-105"
+                    : "hover:border-violet-200/60 hover:shadow-medium"
                 }`}
               >
                 {plan.highlighted && (
@@ -270,33 +274,35 @@ export default function Home() {
                     Meest Gekozen
                   </div>
                 )}
-                <h3 className="text-lg font-semibold">{plan.name}</h3>
-                <p className="text-sm text-muted-foreground mt-1 mb-5">{plan.desc}</p>
-                <div className="flex items-baseline gap-1 mb-6">
-                  <span className="text-4xl font-bold">€{plan.price}</span>
-                  <span className="text-muted-foreground">/mnd</span>
-                </div>
-                <Link
-                  href="/register"
-                  className={`block text-center py-3 rounded-xl font-semibold text-sm transition-all ${
-                    plan.highlighted
-                      ? "gradient-primary text-white shadow-lg shadow-violet-500/20 hover:opacity-90 hover:-translate-y-px"
-                      : "border-2 border-border hover:border-violet-200 hover:bg-violet-50"
-                  }`}
-                >
-                  {plan.highlighted ? "Start Gratis →" : plan.cta}
-                </Link>
-                <ul className="mt-6 space-y-3">
-                  {plan.features.map((f) => (
-                    <li key={f} className="flex items-start gap-2.5 text-sm">
-                      <svg className="w-4 h-4 text-violet-500 mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
-                      <span>{f}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+                <CardContent className="p-7">
+                  <h3 className="text-lg font-semibold">{plan.name}</h3>
+                  <p className="text-sm text-muted-foreground mt-1 mb-5">{plan.desc}</p>
+                  <div className="flex items-baseline gap-1 mb-6">
+                    <span className="text-4xl font-bold">€{plan.price}</span>
+                    <span className="text-muted-foreground">/mnd</span>
+                  </div>
+                  <Link
+                    href="/register"
+                    className={`block text-center py-3 rounded-xl font-semibold text-sm transition-all ${
+                      plan.highlighted
+                        ? "gradient-primary text-white shadow-lg shadow-violet-500/20 hover:opacity-90 hover:-translate-y-px"
+                        : "border-2 border-border hover:border-violet-200 hover:bg-violet-50"
+                    }`}
+                  >
+                    {plan.highlighted ? "Start Gratis →" : plan.cta}
+                  </Link>
+                  <ul className="mt-6 space-y-3">
+                    {plan.features.map((f) => (
+                      <li key={f} className="flex items-start gap-2.5 text-sm">
+                        <svg className="w-4 h-4 text-violet-500 mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                        <span>{f}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </div>

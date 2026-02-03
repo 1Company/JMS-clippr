@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { MobileNav } from "./mobile-nav";
+import { SidebarNav } from "./sidebar-nav";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: "📊" },
@@ -30,57 +30,28 @@ export default async function DashboardLayout({
 
   return (
     <div className="min-h-screen bg-[#fafafa]">
-      {/* Top Navigation */}
-      <header className="sticky top-0 z-50 border-b border-border/40">
-        <div className="absolute inset-0 bg-white/80 backdrop-blur-xl" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="flex h-14 items-center justify-between">
-            <div className="flex items-center gap-8">
-              <Link href="/dashboard" className="font-bold text-lg tracking-tight shrink-0">
-                <span className="gradient-text">✂️ Clippr</span>
-              </Link>
-              
-              {salon && (
-                <nav className="hidden lg:flex items-center">
-                  {navItems.map((item) => (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className="flex items-center gap-1.5 px-3.5 py-2 text-[13px] font-medium text-muted-foreground hover:text-foreground rounded-lg hover:bg-muted/60 transition-colors"
-                    >
-                      <span className="text-sm">{item.icon}</span>
-                      {item.label}
-                    </Link>
-                  ))}
-                </nav>
-              )}
-            </div>
+      {/* Sidebar (client component for mobile toggle) */}
+      <SidebarNav
+        items={navItems}
+        salonName={salon?.name || "Mijn Salon"}
+        salonSlug={salon?.slug || ""}
+        userEmail={session.user.email || ""}
+      />
 
-            <div className="flex items-center gap-3">
-              {salon && (
-                <div className="hidden sm:flex items-center gap-2.5 pl-3 pr-4 py-1.5 rounded-full bg-muted/50 border border-border/40">
-                  <div className="w-6 h-6 rounded-full gradient-primary flex items-center justify-center text-white text-[10px] font-bold">
-                    {salon.name.charAt(0)}
-                  </div>
-                  <span className="text-xs font-medium">{salon.name}</span>
-                </div>
-              )}
-              <Link
-                href="/api/auth/signout"
-                className="text-xs text-muted-foreground hover:text-foreground px-3 py-1.5 rounded-lg hover:bg-muted/60"
-              >
-                Uitloggen
-              </Link>
-              
-              {/* Mobile menu */}
-              <MobileNav items={navItems} />
-            </div>
-          </div>
+      {/* Main content - offset by sidebar on desktop */}
+      <main className="lg:pl-64">
+        {/* Mobile top bar */}
+        <div className="lg:hidden sticky top-0 z-30 flex items-center justify-between h-14 px-4 border-b border-border/40 bg-white/80 backdrop-blur-xl">
+          <Link href="/dashboard" className="font-bold text-lg tracking-tight">
+            <span className="gradient-text">✂️ Clippr</span>
+          </Link>
+          {/* Mobile menu button is rendered inside SidebarNav */}
         </div>
-      </header>
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">{children}</main>
+        <div className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8 max-w-6xl">
+          {children}
+        </div>
+      </main>
     </div>
   );
 }

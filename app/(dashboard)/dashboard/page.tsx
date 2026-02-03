@@ -3,6 +3,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
@@ -83,20 +84,19 @@ export default async function DashboardPage() {
         )}
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        {stats.map((stat, i) => (
-          <div
-            key={stat.label}
-            className="group relative bg-white rounded-xl border border-border/40 p-4 sm:p-5 hover:shadow-medium hover:border-border/60 transition-all duration-200"
-          >
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-xl sm:text-2xl">{stat.icon}</span>
-              <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${stat.gradient} opacity-[0.08] group-hover:opacity-[0.12] transition-opacity`} />
-            </div>
-            <p className="text-2xl sm:text-3xl font-bold tracking-tight">{stat.value}</p>
-            <p className="text-xs text-muted-foreground mt-0.5">{stat.label}</p>
-          </div>
+      {/* Stats */}
+      <div className="flex flex-wrap gap-3 sm:gap-4">
+        {stats.map((stat) => (
+          <Card key={stat.label} className="group flex-1 min-w-[140px] hover:shadow-medium hover:border-border/60 transition-all duration-200">
+            <CardContent className="p-4 sm:p-5">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-xl sm:text-2xl">{stat.icon}</span>
+                <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${stat.gradient} opacity-[0.08] group-hover:opacity-[0.12] transition-opacity`} />
+              </div>
+              <p className="text-2xl sm:text-3xl font-bold tracking-tight">{stat.value}</p>
+              <p className="text-xs text-muted-foreground mt-0.5">{stat.label}</p>
+            </CardContent>
+          </Card>
         ))}
       </div>
 
@@ -152,7 +152,7 @@ export default async function DashboardPage() {
       )}
 
       {/* Upcoming Appointments */}
-      <div className="bg-white rounded-xl border border-border/40 overflow-hidden">
+      <Card className="overflow-hidden">
         <div className="p-4 sm:p-5 flex justify-between items-center border-b border-border/40">
           <div>
             <h2 className="font-semibold">Komende afspraken</h2>
@@ -210,24 +210,24 @@ export default async function DashboardPage() {
             ))}
           </div>
         )}
-      </div>
+      </Card>
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      <div className="flex flex-wrap gap-3 sm:gap-4">
         {[
           { href: "/dashboard/agenda?action=new", icon: "📅", label: "Nieuwe afspraak", desc: "Handmatig inplannen" },
           { href: "/dashboard/team", icon: "👥", label: "Team beheren", desc: "Medewerkers & roosters" },
           { href: "/dashboard/services", icon: "✨", label: "Behandelingen", desc: "Diensten & prijzen" },
           { href: `/book/${salon.slug}`, icon: "🔗", label: "Boekingspagina", desc: "Bekijk als klant" },
         ].map((action) => (
-          <Link
-            key={action.href}
-            href={action.href}
-            className="group bg-white rounded-xl border border-border/40 p-4 sm:p-5 hover:shadow-medium hover:border-border/60 hover:-translate-y-px transition-all duration-200"
-          >
-            <span className="text-xl block mb-2.5 group-hover:scale-110 transition-transform origin-bottom-left">{action.icon}</span>
-            <p className="font-medium text-sm">{action.label}</p>
-            <p className="text-[11px] text-muted-foreground mt-0.5">{action.desc}</p>
+          <Link key={action.href} href={action.href} className="flex-1 min-w-[140px]">
+            <Card className="group h-full hover:shadow-medium hover:border-border/60 hover:-translate-y-px transition-all duration-200">
+              <CardContent className="p-4 sm:p-5">
+                <span className="text-xl block mb-2.5 group-hover:scale-110 transition-transform origin-bottom-left">{action.icon}</span>
+                <p className="font-medium text-sm">{action.label}</p>
+                <p className="text-[11px] text-muted-foreground mt-0.5">{action.desc}</p>
+              </CardContent>
+            </Card>
           </Link>
         ))}
       </div>
