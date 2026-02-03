@@ -37,17 +37,12 @@ Set these in Vercel → Project → Settings → Environment Variables:
 
 ## 3. Database Setup
 
-### Option A: Use Existing Neon Database
-If you already have a Neon database, just use a different schema:
-```
-DATABASE_URL="postgresql://...?schema=clippr"
-```
-
-### Option B: Create New Neon Project
+### Neon Database Setup
 1. Go to [neon.tech](https://neon.tech)
-2. Create new project
-3. Copy the connection string
-4. Add to Vercel environment variables
+2. Create new project (of gebruik bestaand)
+3. Create database "clippr" (of andere naam)
+4. Copy the connection string (gebruik pooler URL)
+5. Add to Vercel environment variables
 
 ### Push Schema
 After deploy, run once to create tables:
@@ -121,7 +116,7 @@ Met Vercel Pro kun je crons toevoegen aan `vercel.json`.
 
 ```env
 # === REQUIRED ===
-DATABASE_URL="postgresql://neondb_owner:xxx@ep-xxx.neon.tech/neondb?sslmode=require&schema=clippr"
+DATABASE_URL="postgresql://neondb_owner:xxx@ep-xxx.neon.tech/clippr?sslmode=require"
 NEXTAUTH_SECRET="your-random-secret-here"
 NEXTAUTH_URL="https://clippr.nl"
 
