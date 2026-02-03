@@ -1,7 +1,7 @@
 # Clippr - TODO & Roadmap
 
 > Modern salon booking platform voor kapsalons en beautysalons
-> Status: 🚧 In Development
+> Status: ✅ MVP Complete - Ready for Deployment
 
 ---
 
@@ -86,28 +86,29 @@
 - [ ] Drag & drop afspraken verplaatsen (later)
 - [ ] Klantgeschiedenis bekijken (later)
 
-### Fase 6: Notificaties (Week 5-6) ⬜
-- [ ] Email notificaties
-  - [ ] Bevestiging bij nieuwe afspraak
-  - [ ] Reminder (24u van tevoren)
-  - [ ] Annulering bevestiging
-  - [ ] Wijziging bevestiging
-- [ ] SMS notificaties (optioneel, Twilio/MessageBird)
-  - [ ] Zelfde triggers als email
-  - [ ] Configurable per salon
-- [ ] Push notificaties voor beheerders
-  - [ ] Nieuwe boeking
-  - [ ] Annulering
-  - [ ] Klant no-show
+### Fase 6: Notificaties (Week 5-6) ✅
+- [x] Email notificaties (Resend)
+  - [x] Bevestiging bij nieuwe afspraak
+  - [x] Reminder (24u van tevoren via Vercel Cron)
+  - [x] Annulering template (ready)
+  - [ ] Wijziging bevestiging (later)
+- [ ] SMS notificaties (optioneel, Twilio/MessageBird) - later
+- [ ] Push notificaties voor beheerders - later
 
 ### Fase 7: Polish & Launch ⬜
-- [ ] Responsive design check
+- [x] Responsive design (mobile-first)
 - [ ] Performance optimalisatie
 - [ ] Error handling & logging
 - [ ] Testing (unit + e2e)
-- [ ] Documentatie
-- [ ] Landing page
+- [x] Deployment documentatie (DEPLOYMENT.md)
+- [ ] Marketing landing page
 - [ ] Pricing pagina
+
+### Deployment ✅
+- [x] Vercel configuratie (vercel.json)
+- [x] Cron job voor reminders (8:00 UTC dagelijks)
+- [x] Environment variables gedocumenteerd
+- [x] Database schema ready for push
 
 ---
 

@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { parse, addMinutes } from "date-fns";
+import { parse, addMinutes, format } from "date-fns";
+import { nl } from "date-fns/locale";
+import { sendBookingConfirmation } from "@/lib/email";
 
 export async function POST(req: NextRequest) {
   try {
@@ -86,7 +88,20 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // TODO: Send confirmation email
+    // Send confirmation email (non-blocking)
+    sendBookingConfirmation({
+      customerName: name,
+      customerEmail: email,
+      salonName: booking.salon.name,
+      serviceName: booking.service.name,
+      staffName: booking.staff.displayName,
+      date: format(startTime, "EEEE d MMMM yyyy", { locale: nl }),
+      time: format(startTime, "HH:mm"),
+      duration: booking.duration,
+      price: `€${Number(booking.price).toFixed(2)}`,
+      bookingId: booking.id,
+      salonSlug: booking.salon.slug,
+    }).catch(console.error);
 
     return NextResponse.json({
       id: booking.id,
