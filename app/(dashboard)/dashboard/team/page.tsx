@@ -23,6 +23,20 @@ export default async function TeamPage() {
         include: { service: true },
       },
       schedule: true,
+      vacations: {
+        where: { endDate: { gte: new Date() } },
+        orderBy: { startDate: "asc" },
+      },
+      sickLeaves: {
+        where: {
+          OR: [
+            { endDate: null },
+            { endDate: { gte: new Date() } },
+          ],
+        },
+        orderBy: { startDate: "desc" },
+        take: 1,
+      },
       _count: {
         select: {
           bookings: {
