@@ -26,14 +26,11 @@ Set these in Vercel → Project → Settings → Environment Variables:
 | `NEXTAUTH_SECRET` | Random secret for auth sessions | Generate with: `openssl rand -base64 32` |
 | `NEXTAUTH_URL` | Your production URL | `https://clippr.nl` |
 
-### Email (SMTP2GO)
+### Email (SMTP2GO API)
 
 | Variable | Description | Example |
 |----------|-------------|---------|
-| `SMTP_HOST` | SMTP server | `mail.smtp2go.com` |
-| `SMTP_PORT` | SMTP port | `2525` (or `587`, `465`) |
-| `SMTP_USER` | SMTP2GO username | `your-smtp2go-username` |
-| `SMTP_PASS` | SMTP2GO password | `your-smtp2go-password` |
+| `SMTP2GO_API_KEY` | SMTP2GO API key | `api-xxxxxxxxxxxxx` |
 | `EMAIL_FROM` | Sender email address | `Clippr <noreply@clippr.nl>` |
 
 ### Optional (Cron)
@@ -102,14 +99,10 @@ vercel --prod
 4. Update `NEXTAUTH_URL` to match
 
 ### Email Setup (SMTP2GO)
-1. Create account at [smtp2go.com](https://www.smtp2go.com)
-2. Go to Settings → SMTP Users → Add SMTP User
-3. Note your username and password
-4. Add to Vercel:
-   - `SMTP_HOST` = `mail.smtp2go.com`
-   - `SMTP_PORT` = `2525`
-   - `SMTP_USER` = your username
-   - `SMTP_PASS` = your password
+1. Login op [smtp2go.com](https://www.smtp2go.com)
+2. Settings → API Keys → Create API Key
+3. Add to Vercel:
+   - `SMTP2GO_API_KEY` = jouw API key
    - `EMAIL_FROM` = `Salon Naam <noreply@jouwdomein.nl>`
 
 ### Cron Jobs
@@ -133,10 +126,7 @@ NEXTAUTH_SECRET="your-random-secret-here"
 NEXTAUTH_URL="https://clippr.nl"
 
 # === EMAIL (SMTP2GO) ===
-SMTP_HOST="mail.smtp2go.com"
-SMTP_PORT="2525"
-SMTP_USER="your-smtp2go-username"
-SMTP_PASS="your-smtp2go-password"
+SMTP2GO_API_KEY="api-xxxxxxxxxxxxxxxx"
 EMAIL_FROM="Clippr <noreply@clippr.nl>"
 
 # === OPTIONAL: Cron Protection ===
@@ -182,10 +172,10 @@ After deployment:
 - Check `NEXTAUTH_URL` matches your domain
 
 ### "Emails not sending"
-- Check SMTP2GO dashboard for errors
-- Verify `SMTP_USER` and `SMTP_PASS` are correct
+- Check SMTP2GO dashboard → Activity log
+- Verify `SMTP2GO_API_KEY` is correct
 - Check if sender domain is verified in SMTP2GO
-- Test with port `587` if `2525` doesn't work
+- Verify `EMAIL_FROM` domain is allowed
 
 ---
 

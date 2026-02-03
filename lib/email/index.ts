@@ -1,16 +1,6 @@
-import nodemailer from "nodemailer";
+// SMTP2GO API - https://www.smtp2go.com/docs/api/
 
-// SMTP2GO Configuration
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || "mail.smtp2go.com",
-  port: parseInt(process.env.SMTP_PORT || "2525"),
-  secure: false, // true for 465, false for other ports
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-});
-
+const SMTP2GO_API_URL = "https://api.smtp2go.com/v3/email/send";
 const FROM_EMAIL = process.env.EMAIL_FROM || "Clippr <noreply@clippr.nl>";
 
 export type BookingEmailData = {
@@ -19,46 +9,68 @@ export type BookingEmailData = {
   salonName: string;
   serviceName: string;
   staffName: string;
-  date: string; // "maandag 10 februari"
-  time: string; // "14:00"
+  date: string;
+  time: string;
   duration: number;
-  price: string; // "€35.00"
+  price: string;
   bookingId: string;
   salonSlug: string;
 };
 
-export async function sendBookingConfirmation(data: BookingEmailData) {
-  if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
-    console.log("[Email] Skipped: No SMTP credentials configured");
-    return { success: false, reason: "no_credentials" };
+async function sendEmail(to: string, subject: string, html: string) {
+  if (!process.env.SMTP2GO_API_KEY) {
+    console.log("[Email] Skipped: No SMTP2GO_API_KEY configured");
+    return { success: false, reason: "no_api_key" };
   }
 
   try {
-    const result = await transporter.sendMail({
-      from: FROM_EMAIL,
-      to: data.customerEmail,
-      subject: `Bevestiging: ${data.serviceName} bij ${data.salonName}`,
-      html: `
+    const response = await fetch(SMTP2GO_API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        api_key: process.env.SMTP2GO_API_KEY,
+        to: [to],
+        sender: FROM_EMAIL,
+        subject,
+        html_body: html,
+      }),
+    });
+
+    const result = await response.json();
+
+    if (result.data?.succeeded > 0) {
+      console.log("[Email] Sent to", to);
+      return { success: true, id: result.request_id };
+    } else {
+      console.error("[Email] Failed:", result);
+      return { success: false, error: result };
+    }
+  } catch (error) {
+    console.error("[Email] Exception:", error);
+    return { success: false, error };
+  }
+}
+
+export async function sendBookingConfirmation(data: BookingEmailData) {
+  const html = `
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Afspraak Bevestiging</title>
 </head>
 <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #f5f5f5; margin: 0; padding: 20px;">
   <div style="max-width: 500px; margin: 0 auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-    <!-- Header -->
     <div style="background: linear-gradient(135deg, #8B5CF6 0%, #6366F1 100%); padding: 24px; text-align: center;">
       <h1 style="color: white; margin: 0; font-size: 24px;">✂️ Afspraak Bevestigd</h1>
     </div>
     
-    <!-- Content -->
     <div style="padding: 24px;">
       <p style="color: #374151; margin: 0 0 20px;">Hoi ${data.customerName},</p>
       <p style="color: #374151; margin: 0 0 20px;">Je afspraak bij <strong>${data.salonName}</strong> is bevestigd!</p>
       
-      <!-- Booking Details Card -->
       <div style="background: #F9FAFB; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
         <table style="width: 100%; border-collapse: collapse;">
           <tr>
@@ -88,12 +100,11 @@ export async function sendBookingConfirmation(data: BookingEmailData) {
         </table>
       </div>
       
-      <p style="color: #6B7280; font-size: 14px; margin: 0 0 20px;">
+      <p style="color: #6B7280; font-size: 14px; margin: 0;">
         Kun je niet komen? Laat het ons zo snel mogelijk weten.
       </p>
     </div>
     
-    <!-- Footer -->
     <div style="background: #F9FAFB; padding: 16px; text-align: center; border-top: 1px solid #E5E7EB;">
       <p style="color: #9CA3AF; font-size: 12px; margin: 0;">
         Geboekt via Clippr • ${data.salonName}
@@ -101,30 +112,17 @@ export async function sendBookingConfirmation(data: BookingEmailData) {
     </div>
   </div>
 </body>
-</html>
-      `,
-    });
+</html>`;
 
-    console.log("[Email] Sent confirmation to", data.customerEmail, result.messageId);
-    return { success: true, id: result.messageId };
-  } catch (error) {
-    console.error("[Email] Error:", error);
-    return { success: false, error };
-  }
+  return sendEmail(
+    data.customerEmail,
+    `Bevestiging: ${data.serviceName} bij ${data.salonName}`,
+    html
+  );
 }
 
 export async function sendBookingReminder(data: BookingEmailData) {
-  if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
-    console.log("[Email] Skipped reminder: No SMTP credentials configured");
-    return { success: false, reason: "no_credentials" };
-  }
-
-  try {
-    const result = await transporter.sendMail({
-      from: FROM_EMAIL,
-      to: data.customerEmail,
-      subject: `Herinnering: Morgen ${data.time} - ${data.serviceName}`,
-      html: `
+  const html = `
 <!DOCTYPE html>
 <html>
 <head>
@@ -152,83 +150,48 @@ export async function sendBookingReminder(data: BookingEmailData) {
         </p>
       </div>
       
-      <p style="color: #6B7280; font-size: 14px; margin: 0;">
-        Tot morgen! 👋
-      </p>
+      <p style="color: #6B7280; font-size: 14px; margin: 0;">Tot morgen! 👋</p>
     </div>
     
     <div style="background: #F9FAFB; padding: 16px; text-align: center; border-top: 1px solid #E5E7EB;">
-      <p style="color: #9CA3AF; font-size: 12px; margin: 0;">
-        ${data.salonName} • Powered by Clippr
-      </p>
+      <p style="color: #9CA3AF; font-size: 12px; margin: 0;">${data.salonName} • Powered by Clippr</p>
     </div>
   </div>
 </body>
-</html>
-      `,
-    });
+</html>`;
 
-    console.log("[Email] Sent reminder to", data.customerEmail);
-    return { success: true, id: result.messageId };
-  } catch (error) {
-    console.error("[Email] Reminder error:", error);
-    return { success: false, error };
-  }
+  return sendEmail(
+    data.customerEmail,
+    `Herinnering: Morgen ${data.time} - ${data.serviceName}`,
+    html
+  );
 }
 
 export async function sendBookingCancellation(data: BookingEmailData & { reason?: string }) {
-  if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
-    return { success: false, reason: "no_credentials" };
-  }
-
-  try {
-    const result = await transporter.sendMail({
-      from: FROM_EMAIL,
-      to: data.customerEmail,
-      subject: `Afspraak geannuleerd - ${data.salonName}`,
-      html: `
+  const html = `
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="utf-8">
-</head>
+<head><meta charset="utf-8"></head>
 <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #f5f5f5; margin: 0; padding: 20px;">
   <div style="max-width: 500px; margin: 0 auto; background: white; border-radius: 12px; overflow: hidden;">
     <div style="background: #EF4444; padding: 24px; text-align: center;">
       <h1 style="color: white; margin: 0; font-size: 24px;">Afspraak Geannuleerd</h1>
     </div>
-    
     <div style="padding: 24px;">
       <p style="color: #374151;">Hoi ${data.customerName},</p>
       <p style="color: #374151;">
         Je afspraak voor <strong>${data.serviceName}</strong> op <strong>${data.date}</strong> om <strong>${data.time}</strong> is geannuleerd.
       </p>
       ${data.reason ? `<p style="color: #6B7280; font-style: italic;">"${data.reason}"</p>` : ""}
-      <p style="color: #374151;">
-        Je kunt een nieuwe afspraak maken via onze website.
-      </p>
+      <p style="color: #374151;">Je kunt een nieuwe afspraak maken via onze website.</p>
     </div>
   </div>
 </body>
-</html>
-      `,
-    });
+</html>`;
 
-    return { success: true, id: result.messageId };
-  } catch (error) {
-    console.error("[Email] Cancellation error:", error);
-    return { success: false, error };
-  }
-}
-
-// Verify SMTP connection on startup (optional)
-export async function verifyEmailConnection() {
-  try {
-    await transporter.verify();
-    console.log("[Email] SMTP connection verified");
-    return true;
-  } catch (error) {
-    console.error("[Email] SMTP connection failed:", error);
-    return false;
-  }
+  return sendEmail(
+    data.customerEmail,
+    `Afspraak geannuleerd - ${data.salonName}`,
+    html
+  );
 }
