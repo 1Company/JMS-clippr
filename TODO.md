@@ -57,19 +57,19 @@
   - [ ] Per dag van de week
   - [ ] Speciale dagen (feestdagen, etc.)
 
-### Fase 4: Klant Booking (Week 3-4) ⬜
-- [ ] Publieke booking pagina (salon.clippr.nl/[slug])
-- [ ] Booking flow:
-  1. [ ] Behandeling kiezen
-  2. [ ] Medewerker kiezen (gefilterd op skills)
-  3. [ ] "Eerste beschikbaar" optie
-  4. [ ] Datum kiezen (alleen binnen openingstijden)
-  5. [ ] Tijd kiezen (vrije slots)
-  6. [ ] Contactgegevens invoeren
-  7. [ ] Bevestiging
-- [ ] Klant login (magic link)
-- [ ] Voorkeursmedewerker opslaan
-- [ ] Afspraak annuleren/verzetten
+### Fase 4: Klant Booking (Week 3-4) ✅
+- [x] Publieke booking pagina (/book/[slug])
+- [x] Booking flow:
+  1. [x] Behandeling kiezen (per categorie)
+  2. [x] Medewerker kiezen (gefilterd op skills)
+  3. [x] "Eerste beschikbaar" optie
+  4. [x] Datum kiezen (14 dagen, alleen open dagen)
+  5. [x] Tijd kiezen (vrije slots met conflict check)
+  6. [x] Contactgegevens invoeren
+  7. [x] Bevestiging scherm
+- [ ] Klant login (magic link) - later
+- [ ] Voorkeursmedewerker opslaan - later
+- [ ] Afspraak annuleren/verzetten - later
 
 ### Fase 5: Beheerder Agenda (Week 4-5) ⬜
 - [ ] Dashboard overzicht
