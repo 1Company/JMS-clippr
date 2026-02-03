@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { format, addDays, isSameDay, parseISO } from "date-fns";
+import { format, addDays, isSameDay } from "date-fns";
 import { nl } from "date-fns/locale";
 
 type Service = {
@@ -21,32 +21,14 @@ type Staff = {
   schedule: { dayOfWeek: number; startTime: string; endTime: string; isWorking: boolean }[];
 };
 
-type OpeningHours = {
-  dayOfWeek: number;
-  openTime: string;
-  closeTime: string;
-  isClosed: boolean;
-};
+type OpeningHours = { dayOfWeek: number; openTime: string; closeTime: string; isClosed: boolean };
+type Salon = { id: string; name: string; slug: string; timezone: string; bufferMinutes: number };
+type TimeSlot = { time: string; staffId: string; staffName: string };
 
-type Salon = {
-  id: string;
-  name: string;
-  slug: string;
-  timezone: string;
-  bufferMinutes: number;
-};
-
-type TimeSlot = {
-  time: string;
-  staffId: string;
-  staffName: string;
-};
+const STEPS = ["Behandeling", "Medewerker", "Datum & Tijd", "Gegevens"];
 
 export function BookingWizard({
-  salon,
-  servicesByCategory,
-  staff,
-  openingHours,
+  salon, servicesByCategory, staff, openingHours,
 }: {
   salon: Salon;
   servicesByCategory: Record<string, Service[]>;
@@ -61,136 +43,88 @@ export function BookingWizard({
   const [selectedSlot, setSelectedSlot] = useState<TimeSlot | null>(null);
   const [availableSlots, setAvailableSlots] = useState<TimeSlot[]>([]);
   const [loadingSlots, setLoadingSlots] = useState(false);
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    notes: "",
-  });
+  const [formData, setFormData] = useState({ name: "", email: "", phone: "", notes: "" });
   const [submitting, setSubmitting] = useState(false);
   const [bookingComplete, setBookingComplete] = useState(false);
-  const [bookingDetails, setBookingDetails] = useState<any>(null);
 
-  // Get available staff for selected service
   const availableStaff = selectedService
-    ? staff.filter(s => 
-        selectedService.staff.some(ss => ss.staff.id === s.id)
-      )
+    ? staff.filter(s => selectedService.staff.some(ss => ss.staff.id === s.id))
     : [];
 
-  // Generate next 14 days for date selection
   const dateOptions = Array.from({ length: 14 }, (_, i) => addDays(new Date(), i));
 
-  // Fetch available slots when date changes
   useEffect(() => {
     if (!selectedDate || !selectedService) return;
-    
     const fetchSlots = async () => {
       setLoadingSlots(true);
       try {
-        const params = new URLSearchParams({
-          salonId: salon.id,
-          serviceId: selectedService.id,
-          date: format(selectedDate, "yyyy-MM-dd"),
-        });
-        if (selectedStaff && !anyStaff) {
-          params.append("staffId", selectedStaff.id);
-        }
-
+        const params = new URLSearchParams({ salonId: salon.id, serviceId: selectedService.id, date: format(selectedDate, "yyyy-MM-dd") });
+        if (selectedStaff && !anyStaff) params.append("staffId", selectedStaff.id);
         const res = await fetch(`/api/availability?${params}`);
         const data = await res.json();
         setAvailableSlots(data.slots || []);
-      } catch (err) {
-        console.error(err);
-        setAvailableSlots([]);
-      } finally {
-        setLoadingSlots(false);
-      }
+      } catch { setAvailableSlots([]); }
+      finally { setLoadingSlots(false); }
     };
-
     fetchSlots();
   }, [selectedDate, selectedService, selectedStaff, anyStaff, salon.id]);
 
-  // Check if day is closed
   const isDayClosed = (date: Date) => {
-    const dayOfWeek = date.getDay();
-    const hours = openingHours.find(h => h.dayOfWeek === dayOfWeek);
+    const hours = openingHours.find(h => h.dayOfWeek === date.getDay());
     return hours?.isClosed ?? true;
   };
 
-  // Handle booking submission
   const handleSubmit = async () => {
     if (!selectedService || !selectedSlot || !selectedDate) return;
-    
     setSubmitting(true);
     try {
       const res = await fetch("/api/book", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          salonId: salon.id,
-          serviceId: selectedService.id,
-          staffId: selectedSlot.staffId,
-          date: format(selectedDate, "yyyy-MM-dd"),
-          time: selectedSlot.time,
-          ...formData,
+          salonId: salon.id, serviceId: selectedService.id, staffId: selectedSlot.staffId,
+          date: format(selectedDate, "yyyy-MM-dd"), time: selectedSlot.time, ...formData,
         }),
       });
-
-      if (res.ok) {
-        const booking = await res.json();
-        setBookingDetails(booking);
-        setBookingComplete(true);
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setSubmitting(false);
-    }
+      if (res.ok) setBookingComplete(true);
+    } catch (err) { console.error(err); }
+    finally { setSubmitting(false); }
   };
 
-  // Booking complete view
-  if (bookingComplete && bookingDetails) {
+  // ✅ Booking Complete
+  if (bookingComplete) {
     return (
-      <div className="bg-card rounded-lg border p-6 text-center">
-        <div className="text-5xl mb-4">✅</div>
-        <h2 className="text-xl font-bold mb-2">Afspraak bevestigd!</h2>
-        <p className="text-muted-foreground mb-6">
-          We hebben je een bevestiging gestuurd naar {formData.email}
+      <div className="bg-white rounded-3xl border p-8 text-center animate-slide-up shadow-lg shadow-black/[0.03]">
+        <div className="w-20 h-20 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-6">
+          <span className="text-4xl">✅</span>
+        </div>
+        <h2 className="text-2xl font-bold mb-2">Afspraak bevestigd!</h2>
+        <p className="text-muted-foreground mb-8">
+          We sturen een bevestiging naar <strong>{formData.email}</strong>
         </p>
         
-        <div className="bg-muted rounded-lg p-4 text-left mb-6">
-          <div className="space-y-2">
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Behandeling</span>
-              <span className="font-medium">{selectedService?.name}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Datum</span>
-              <span className="font-medium">
-                {selectedDate && format(selectedDate, "EEEE d MMMM", { locale: nl })}
-              </span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Tijd</span>
-              <span className="font-medium">{selectedSlot?.time}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Medewerker</span>
-              <span className="font-medium">{selectedSlot?.staffName}</span>
-            </div>
-            <div className="flex justify-between border-t pt-2 mt-2">
+        <div className="bg-muted/50 rounded-2xl p-5 text-left mb-8">
+          <div className="space-y-3">
+            {[
+              { l: "Behandeling", v: selectedService?.name },
+              { l: "Datum", v: selectedDate && format(selectedDate, "EEEE d MMMM", { locale: nl }) },
+              { l: "Tijd", v: selectedSlot?.time },
+              { l: "Medewerker", v: selectedSlot?.staffName },
+            ].map(({ l, v }) => (
+              <div key={l} className="flex justify-between text-sm">
+                <span className="text-muted-foreground">{l}</span>
+                <span className="font-medium">{v}</span>
+              </div>
+            ))}
+            <div className="border-t pt-3 flex justify-between">
               <span className="text-muted-foreground">Prijs</span>
-              <span className="font-bold">€{Number(selectedService?.price).toFixed(2)}</span>
+              <span className="text-xl font-bold gradient-text">€{Number(selectedService?.price).toFixed(2)}</span>
             </div>
           </div>
         </div>
 
-        <button
-          onClick={() => window.location.reload()}
-          className="text-primary hover:underline text-sm"
-        >
-          Nog een afspraak maken
+        <button onClick={() => window.location.reload()} className="text-violet-600 hover:underline underline-offset-4 text-sm font-medium">
+          Nog een afspraak maken →
         </button>
       </div>
     );
@@ -198,46 +132,43 @@ export function BookingWizard({
 
   return (
     <div className="space-y-6">
-      {/* Progress Steps */}
+      {/* Progress */}
       <div className="flex gap-2">
-        {[1, 2, 3, 4].map((s) => (
-          <div
-            key={s}
-            className={`flex-1 h-1.5 rounded-full transition-colors ${
-              s <= step ? "bg-primary" : "bg-muted"
-            }`}
-          />
+        {STEPS.map((label, i) => (
+          <div key={label} className="flex-1">
+            <div className={`h-1.5 rounded-full mb-1.5 transition-all duration-500 ${i + 1 <= step ? "gradient-primary" : "bg-muted"}`} />
+            <span className={`text-[10px] font-medium hidden sm:block ${i + 1 <= step ? "text-violet-600" : "text-muted-foreground"}`}>{label}</span>
+          </div>
         ))}
       </div>
 
-      {/* Step 1: Choose Service */}
+      {/* Step 1: Service */}
       {step === 1 && (
-        <div className="space-y-4">
-          <h2 className="text-lg font-semibold">Kies een behandeling</h2>
+        <div className="space-y-4 animate-fade-in">
+          <div>
+            <h2 className="text-xl font-bold">Wat wil je laten doen?</h2>
+            <p className="text-sm text-muted-foreground">Kies een behandeling</p>
+          </div>
           
           {Object.entries(servicesByCategory).map(([category, services]) => (
             <div key={category}>
-              <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-2">
-                {category}
-              </h3>
+              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 px-1">{category}</h3>
               <div className="space-y-2">
                 {services.map((service) => (
                   <button
                     key={service.id}
-                    onClick={() => {
-                      setSelectedService(service);
-                      setStep(2);
-                    }}
-                    className="w-full p-4 rounded-lg border bg-card hover:border-primary transition text-left flex justify-between items-center"
+                    onClick={() => { setSelectedService(service); setStep(2); }}
+                    className="w-full p-4 rounded-2xl bg-white border hover:border-violet-200 hover:shadow-md hover:shadow-violet-500/5 transition-all text-left flex justify-between items-center group"
                   >
                     <div>
-                      <p className="font-medium">{service.name}</p>
-                      {service.description && (
-                        <p className="text-sm text-muted-foreground">{service.description}</p>
-                      )}
-                      <p className="text-xs text-muted-foreground mt-1">{service.duration} min</p>
+                      <p className="font-semibold group-hover:text-violet-700">{service.name}</p>
+                      {service.description && <p className="text-sm text-muted-foreground mt-0.5">{service.description}</p>}
+                      <p className="text-xs text-muted-foreground mt-1">⏱ {service.duration} min</p>
                     </div>
-                    <p className="font-bold text-lg">€{Number(service.price).toFixed(2)}</p>
+                    <div className="text-right shrink-0 ml-4">
+                      <p className="text-lg font-bold">€{Number(service.price).toFixed(2)}</p>
+                      <span className="text-violet-500 opacity-0 group-hover:opacity-100 transition-opacity text-sm">Kies →</span>
+                    </div>
                   </button>
                 ))}
               </div>
@@ -246,56 +177,38 @@ export function BookingWizard({
         </div>
       )}
 
-      {/* Step 2: Choose Staff */}
+      {/* Step 2: Staff */}
       {step === 2 && selectedService && (
-        <div className="space-y-4">
-          <button onClick={() => setStep(1)} className="text-sm text-muted-foreground hover:text-foreground">
-            ← Terug
-          </button>
-          
-          <h2 className="text-lg font-semibold">Kies een medewerker</h2>
-          <p className="text-sm text-muted-foreground">
-            Voor: <span className="font-medium text-foreground">{selectedService.name}</span>
-          </p>
+        <div className="space-y-4 animate-fade-in">
+          <button onClick={() => setStep(1)} className="text-sm text-muted-foreground hover:text-violet-600 font-medium">← Terug</button>
+          <div>
+            <h2 className="text-xl font-bold">Bij wie wil je?</h2>
+            <p className="text-sm text-muted-foreground">Voor: {selectedService.name}</p>
+          </div>
 
           <div className="space-y-2">
-            {/* Any staff option */}
             <button
-              onClick={() => {
-                setAnyStaff(true);
-                setSelectedStaff(null);
-                setStep(3);
-              }}
-              className="w-full p-4 rounded-lg border bg-card hover:border-primary transition text-left flex items-center gap-3"
+              onClick={() => { setAnyStaff(true); setSelectedStaff(null); setStep(3); }}
+              className="w-full p-4 rounded-2xl bg-white border hover:border-violet-200 hover:shadow-md transition-all text-left flex items-center gap-4 group"
             >
-              <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
-                ⚡
-              </div>
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-violet-100 to-indigo-100 flex items-center justify-center text-xl">⚡</div>
               <div>
-                <p className="font-medium">Eerste beschikbaar</p>
+                <p className="font-semibold group-hover:text-violet-700">Eerste beschikbaar</p>
                 <p className="text-sm text-muted-foreground">Snelste beschikbare tijd</p>
               </div>
             </button>
 
-            {/* Individual staff */}
             {availableStaff.map((member) => (
               <button
                 key={member.id}
-                onClick={() => {
-                  setSelectedStaff(member);
-                  setAnyStaff(false);
-                  setStep(3);
-                }}
-                className="w-full p-4 rounded-lg border bg-card hover:border-primary transition text-left flex items-center gap-3"
+                onClick={() => { setSelectedStaff(member); setAnyStaff(false); setStep(3); }}
+                className="w-full p-4 rounded-2xl bg-white border hover:border-violet-200 hover:shadow-md transition-all text-left flex items-center gap-4 group"
               >
-                <div 
-                  className="w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold"
-                  style={{ backgroundColor: member.color || "#8B5CF6" }}
-                >
+                <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-white font-bold text-lg shadow-sm" style={{ backgroundColor: member.color || "#8B5CF6" }}>
                   {member.displayName.charAt(0)}
                 </div>
                 <div>
-                  <p className="font-medium">{member.displayName}</p>
+                  <p className="font-semibold group-hover:text-violet-700">{member.displayName}</p>
                 </div>
               </button>
             ))}
@@ -303,42 +216,36 @@ export function BookingWizard({
         </div>
       )}
 
-      {/* Step 3: Choose Date & Time */}
+      {/* Step 3: Date & Time */}
       {step === 3 && selectedService && (
-        <div className="space-y-4">
-          <button onClick={() => setStep(2)} className="text-sm text-muted-foreground hover:text-foreground">
-            ← Terug
-          </button>
+        <div className="space-y-4 animate-fade-in">
+          <button onClick={() => setStep(2)} className="text-sm text-muted-foreground hover:text-violet-600 font-medium">← Terug</button>
+          <div>
+            <h2 className="text-xl font-bold">Wanneer past het?</h2>
+            <p className="text-sm text-muted-foreground">{selectedService.name} {!anyStaff && selectedStaff && `met ${selectedStaff.displayName}`}</p>
+          </div>
 
-          <h2 className="text-lg font-semibold">Kies datum en tijd</h2>
-          <p className="text-sm text-muted-foreground">
-            {selectedService.name} {!anyStaff && selectedStaff && `met ${selectedStaff.displayName}`}
-          </p>
-
-          {/* Date Selection */}
-          <div className="flex gap-2 overflow-x-auto pb-2">
+          {/* Date Picker */}
+          <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1 scrollbar-none">
             {dateOptions.map((date) => {
               const closed = isDayClosed(date);
               const selected = selectedDate && isSameDay(date, selectedDate);
-              
+              const isToday = isSameDay(date, new Date());
               return (
                 <button
                   key={date.toISOString()}
                   onClick={() => !closed && setSelectedDate(date)}
                   disabled={closed}
-                  className={`flex-shrink-0 p-3 rounded-lg border text-center min-w-[70px] transition ${
-                    selected
-                      ? "bg-primary text-primary-foreground border-primary"
-                      : closed
-                      ? "bg-muted text-muted-foreground cursor-not-allowed"
-                      : "bg-card hover:border-primary"
+                  className={`flex-shrink-0 p-3 rounded-2xl text-center min-w-[72px] border-2 transition-all ${
+                    selected ? "border-violet-500 bg-violet-500 text-white shadow-lg shadow-violet-500/25" :
+                    closed ? "border-transparent bg-muted/50 text-muted-foreground/40 cursor-not-allowed" :
+                    isToday ? "border-violet-200 bg-violet-50 hover:bg-violet-100" :
+                    "border-transparent bg-white hover:border-violet-200"
                   }`}
                 >
-                  <p className="text-xs uppercase">
-                    {format(date, "EEE", { locale: nl })}
-                  </p>
-                  <p className="text-lg font-bold">{format(date, "d")}</p>
-                  <p className="text-xs">{format(date, "MMM", { locale: nl })}</p>
+                  <p className="text-[10px] uppercase font-semibold tracking-wider opacity-70">{format(date, "EEE", { locale: nl })}</p>
+                  <p className="text-xl font-bold my-0.5">{format(date, "d")}</p>
+                  <p className="text-[10px] opacity-70">{format(date, "MMM", { locale: nl })}</p>
                 </button>
               );
             })}
@@ -347,30 +254,29 @@ export function BookingWizard({
           {/* Time Slots */}
           {selectedDate && (
             <div>
-              <h3 className="font-medium mb-2">Beschikbare tijden</h3>
+              <h3 className="font-semibold mb-3">Beschikbare tijden</h3>
               {loadingSlots ? (
-                <div className="text-center py-8 text-muted-foreground">
-                  Laden...
+                <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                  {Array.from({ length: 8 }).map((_, i) => (
+                    <div key={i} className="h-12 rounded-xl bg-muted animate-pulse" />
+                  ))}
                 </div>
               ) : availableSlots.length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground">
-                  Geen beschikbare tijden op deze dag
+                <div className="text-center py-10 text-muted-foreground">
+                  <span className="text-3xl block mb-2">😔</span>
+                  <p className="font-medium">Geen beschikbare tijden</p>
+                  <p className="text-sm">Probeer een andere dag</p>
                 </div>
               ) : (
                 <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
                   {availableSlots.map((slot, i) => (
                     <button
                       key={i}
-                      onClick={() => {
-                        setSelectedSlot(slot);
-                        setStep(4);
-                      }}
-                      className="p-3 rounded-lg border bg-card hover:border-primary transition text-center"
+                      onClick={() => { setSelectedSlot(slot); setStep(4); }}
+                      className="py-3 px-2 rounded-xl bg-white border hover:border-violet-300 hover:bg-violet-50 transition-all text-center group"
                     >
-                      <p className="font-medium">{slot.time}</p>
-                      {anyStaff && (
-                        <p className="text-xs text-muted-foreground">{slot.staffName}</p>
-                      )}
+                      <p className="font-semibold group-hover:text-violet-700">{slot.time}</p>
+                      {anyStaff && <p className="text-[10px] text-muted-foreground mt-0.5">{slot.staffName}</p>}
                     </button>
                   ))}
                 </div>
@@ -380,89 +286,64 @@ export function BookingWizard({
         </div>
       )}
 
-      {/* Step 4: Contact Details */}
+      {/* Step 4: Details */}
       {step === 4 && selectedService && selectedSlot && selectedDate && (
-        <div className="space-y-4">
-          <button onClick={() => setStep(3)} className="text-sm text-muted-foreground hover:text-foreground">
-            ← Terug
-          </button>
-
-          <h2 className="text-lg font-semibold">Jouw gegevens</h2>
+        <div className="space-y-5 animate-fade-in">
+          <button onClick={() => setStep(3)} className="text-sm text-muted-foreground hover:text-violet-600 font-medium">← Terug</button>
+          <div>
+            <h2 className="text-xl font-bold">Bijna klaar!</h2>
+            <p className="text-sm text-muted-foreground">Vul je gegevens in om te bevestigen</p>
+          </div>
 
           {/* Summary */}
-          <div className="bg-muted rounded-lg p-4">
-            <div className="space-y-1 text-sm">
-              <div className="flex justify-between">
-                <span>{selectedService.name}</span>
-                <span className="font-medium">€{Number(selectedService.price).toFixed(2)}</span>
+          <div className="bg-violet-50 rounded-2xl p-4 border border-violet-100">
+            <div className="flex justify-between items-start">
+              <div>
+                <p className="font-semibold">{selectedService.name}</p>
+                <p className="text-sm text-violet-700">{format(selectedDate, "EEEE d MMMM", { locale: nl })} om {selectedSlot.time}</p>
+                <p className="text-sm text-violet-600/70">met {selectedSlot.staffName}</p>
               </div>
-              <div className="flex justify-between text-muted-foreground">
-                <span>{format(selectedDate, "EEEE d MMMM", { locale: nl })}</span>
-                <span>{selectedSlot.time}</span>
-              </div>
-              <div className="text-muted-foreground">
-                met {selectedSlot.staffName}
-              </div>
+              <p className="text-xl font-bold text-violet-700">€{Number(selectedService.price).toFixed(2)}</p>
             </div>
           </div>
 
-          {/* Form */}
-          <div className="space-y-3">
+          <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium mb-1">Naam *</label>
-              <input
-                type="text"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                required
-                className="w-full px-3 py-2 rounded-md border bg-background"
-                placeholder="Je naam"
-              />
+              <label className="block text-sm font-medium mb-2">Naam *</label>
+              <input type="text" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} required
+                className="w-full px-4 py-3 rounded-xl border bg-white placeholder:text-muted-foreground/50" placeholder="Je naam" />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Email *</label>
-              <input
-                type="email"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                required
-                className="w-full px-3 py-2 rounded-md border bg-background"
-                placeholder="je@email.nl"
-              />
+              <label className="block text-sm font-medium mb-2">Email *</label>
+              <input type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} required
+                className="w-full px-4 py-3 rounded-xl border bg-white placeholder:text-muted-foreground/50" placeholder="je@email.nl" />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Telefoon</label>
-              <input
-                type="tel"
-                value={formData.phone}
-                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                className="w-full px-3 py-2 rounded-md border bg-background"
-                placeholder="06 12345678"
-              />
+              <label className="block text-sm font-medium mb-2">Telefoon <span className="text-muted-foreground font-normal">(optioneel)</span></label>
+              <input type="tel" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                className="w-full px-4 py-3 rounded-xl border bg-white placeholder:text-muted-foreground/50" placeholder="06 12345678" />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Opmerkingen</label>
-              <textarea
-                value={formData.notes}
-                onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                className="w-full px-3 py-2 rounded-md border bg-background"
-                rows={2}
-                placeholder="Eventuele wensen of opmerkingen"
-              />
+              <label className="block text-sm font-medium mb-2">Opmerkingen <span className="text-muted-foreground font-normal">(optioneel)</span></label>
+              <textarea value={formData.notes} onChange={(e) => setFormData({ ...formData, notes: e.target.value })} rows={2}
+                className="w-full px-4 py-3 rounded-xl border bg-white placeholder:text-muted-foreground/50 resize-none" placeholder="Eventuele wensen" />
             </div>
           </div>
 
           <button
             onClick={handleSubmit}
             disabled={submitting || !formData.name || !formData.email}
-            className="w-full py-3 px-4 rounded-md bg-primary text-primary-foreground font-medium hover:opacity-90 transition disabled:opacity-50"
+            className="w-full py-4 rounded-2xl gradient-primary text-white font-semibold text-lg hover:opacity-90 disabled:opacity-50 shadow-xl shadow-violet-500/25"
           >
-            {submitting ? "Bezig met boeken..." : "Afspraak bevestigen"}
+            {submitting ? (
+              <span className="flex items-center justify-center gap-2">
+                <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+                Bezig met boeken...
+              </span>
+            ) : "Afspraak Bevestigen ✓"}
           </button>
 
-          <p className="text-xs text-center text-muted-foreground">
-            Je ontvangt een bevestiging per email
-          </p>
+          <p className="text-xs text-center text-muted-foreground">Je ontvangt een bevestiging per email</p>
         </div>
       )}
     </div>

@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { BookingWizard } from "./booking-wizard";
+import Link from "next/link";
 
 export default async function BookingPage({
   params,
@@ -37,10 +38,8 @@ export default async function BookingPage({
     notFound();
   }
 
-  // Filter staff who have at least one service
   const availableStaff = salon.staff.filter(s => s.services.length > 0);
 
-  // Group services by category
   const servicesByCategory = salon.services.reduce((acc, service) => {
     const catName = service.category?.name || "Overig";
     if (!acc[catName]) acc[catName] = [];
@@ -49,22 +48,20 @@ export default async function BookingPage({
   }, {} as Record<string, typeof salon.services>);
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-background to-muted">
+    <main className="min-h-screen gradient-subtle">
       {/* Header */}
-      <header className="border-b bg-background/95 backdrop-blur sticky top-0 z-10">
-        <div className="container mx-auto px-4 py-4">
+      <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-xl border-b">
+        <div className="max-w-2xl mx-auto px-4 py-4">
           <div className="flex items-center gap-3">
-            {salon.logo ? (
-              <img src={salon.logo} alt={salon.name} className="w-10 h-10 rounded-full" />
-            ) : (
-              <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold">
-                {salon.name.charAt(0)}
-              </div>
-            )}
+            <div className="w-11 h-11 rounded-2xl gradient-primary flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-violet-500/20">
+              {salon.name.charAt(0)}
+            </div>
             <div>
-              <h1 className="font-bold">{salon.name}</h1>
+              <h1 className="font-bold text-lg tracking-tight">{salon.name}</h1>
               {salon.city && (
-                <p className="text-sm text-muted-foreground">{salon.city}</p>
+                <p className="text-sm text-muted-foreground flex items-center gap-1">
+                  📍 {salon.city}
+                </p>
               )}
             </div>
           </div>
@@ -72,7 +69,7 @@ export default async function BookingPage({
       </header>
 
       {/* Booking Wizard */}
-      <div className="container mx-auto px-4 py-6 max-w-2xl">
+      <div className="max-w-2xl mx-auto px-4 py-8">
         <BookingWizard
           salon={{
             id: salon.id,
@@ -88,8 +85,10 @@ export default async function BookingPage({
       </div>
 
       {/* Footer */}
-      <footer className="border-t mt-auto py-4 text-center text-sm text-muted-foreground">
-        Powered by <span className="text-primary font-medium">✂️ Clippr</span>
+      <footer className="border-t py-6 text-center">
+        <Link href="/" className="text-sm text-muted-foreground hover:text-foreground">
+          Powered by <span className="gradient-text font-semibold">✂️ Clippr</span>
+        </Link>
       </footer>
     </main>
   );
