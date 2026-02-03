@@ -3,8 +3,10 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function RegisterPage() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     salonName: "",
     name: "",
@@ -12,11 +14,13 @@ export default function RegisterPage() {
     phone: "",
   });
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [step, setStep] = useState(1);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError("");
 
     try {
       // Stap 1: Maak account + salon aan via API
@@ -26,16 +30,31 @@ export default function RegisterPage() {
         body: JSON.stringify(formData),
       });
 
-      if (res.ok) {
-        // Stap 2: Log automatisch in
-        await signIn("credentials", {
-          email: formData.email,
-          password: "demo", // Temporary for dev
-          callbackUrl: "/dashboard?welcome=true",
-        });
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || "Er ging iets mis");
+        setLoading(false);
+        return;
+      }
+
+      // Stap 2: Log automatisch in (redirect: false zodat we het zelf kunnen afhandelen)
+      const signInResult = await signIn("credentials", {
+        email: formData.email,
+        password: "demo",
+        redirect: false,
+      });
+
+      if (signInResult?.error) {
+        // Als signIn faalt, stuur naar login met email
+        router.push(`/login?email=${encodeURIComponent(formData.email)}&registered=true`);
+      } else {
+        // Succes! Ga naar dashboard
+        router.push("/dashboard?welcome=true");
       }
     } catch (err) {
       console.error(err);
+      setError("Er ging iets mis. Probeer het opnieuw.");
     } finally {
       setLoading(false);
     }
@@ -63,6 +82,12 @@ export default function RegisterPage() {
               />
             ))}
           </div>
+
+          {error && (
+            <div className="mb-4 p-3 rounded-md bg-destructive/10 text-destructive text-sm">
+              {error}
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             {step === 1 && (
