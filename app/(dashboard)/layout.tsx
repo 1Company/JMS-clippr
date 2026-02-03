@@ -29,25 +29,26 @@ export default async function DashboardLayout({
   });
 
   return (
-    <div className="min-h-screen bg-muted/30">
+    <div className="min-h-screen bg-[#fafafa]">
       {/* Top Navigation */}
-      <header className="sticky top-0 z-50 border-b bg-white/80 backdrop-blur-xl">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="flex h-16 items-center justify-between">
+      <header className="sticky top-0 z-50 border-b border-border/40">
+        <div className="absolute inset-0 bg-white/80 backdrop-blur-xl" />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="flex h-14 items-center justify-between">
             <div className="flex items-center gap-8">
-              <Link href="/dashboard" className="font-bold text-xl tracking-tight">
+              <Link href="/dashboard" className="font-bold text-lg tracking-tight shrink-0">
                 <span className="gradient-text">✂️ Clippr</span>
               </Link>
               
               {salon && (
-                <nav className="hidden lg:flex items-center gap-1">
+                <nav className="hidden lg:flex items-center">
                   {navItems.map((item) => (
                     <Link
                       key={item.href}
                       href={item.href}
-                      className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted rounded-xl transition-colors"
+                      className="flex items-center gap-1.5 px-3.5 py-2 text-[13px] font-medium text-muted-foreground hover:text-foreground rounded-lg hover:bg-muted/60 transition-colors"
                     >
-                      <span className="text-base">{item.icon}</span>
+                      <span className="text-sm">{item.icon}</span>
                       {item.label}
                     </Link>
                   ))}
@@ -55,21 +56,18 @@ export default async function DashboardLayout({
               )}
             </div>
 
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
               {salon && (
-                <div className="hidden sm:flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full gradient-primary flex items-center justify-center text-white text-xs font-bold shadow-sm">
+                <div className="hidden sm:flex items-center gap-2.5 pl-3 pr-4 py-1.5 rounded-full bg-muted/50 border border-border/40">
+                  <div className="w-6 h-6 rounded-full gradient-primary flex items-center justify-center text-white text-[10px] font-bold">
                     {salon.name.charAt(0)}
                   </div>
-                  <div className="hidden md:block">
-                    <p className="text-sm font-medium leading-none">{salon.name}</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">{session.user.email}</p>
-                  </div>
+                  <span className="text-xs font-medium">{salon.name}</span>
                 </div>
               )}
               <Link
                 href="/api/auth/signout"
-                className="text-sm text-muted-foreground hover:text-foreground px-3 py-1.5 rounded-lg hover:bg-muted"
+                className="text-xs text-muted-foreground hover:text-foreground px-3 py-1.5 rounded-lg hover:bg-muted/60"
               >
                 Uitloggen
               </Link>
@@ -82,7 +80,7 @@ export default async function DashboardLayout({
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8">{children}</main>
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">{children}</main>
     </div>
   );
 }

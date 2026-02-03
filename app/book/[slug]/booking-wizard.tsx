@@ -4,37 +4,15 @@ import { useState, useEffect } from "react";
 import { format, addDays, isSameDay } from "date-fns";
 import { nl } from "date-fns/locale";
 
-type Service = {
-  id: string;
-  name: string;
-  description: string | null;
-  duration: number;
-  price: any;
-  staff: { staff: { id: string; displayName: string } }[];
-};
-
-type Staff = {
-  id: string;
-  displayName: string;
-  color: string | null;
-  services: { serviceId: string }[];
-  schedule: { dayOfWeek: number; startTime: string; endTime: string; isWorking: boolean }[];
-};
-
+type Service = { id: string; name: string; description: string | null; duration: number; price: any; staff: { staff: { id: string; displayName: string } }[] };
+type Staff = { id: string; displayName: string; color: string | null; services: { serviceId: string }[]; schedule: { dayOfWeek: number; startTime: string; endTime: string; isWorking: boolean }[] };
 type OpeningHours = { dayOfWeek: number; openTime: string; closeTime: string; isClosed: boolean };
 type Salon = { id: string; name: string; slug: string; timezone: string; bufferMinutes: number };
 type TimeSlot = { time: string; staffId: string; staffName: string };
 
 const STEPS = ["Behandeling", "Medewerker", "Datum & Tijd", "Gegevens"];
 
-export function BookingWizard({
-  salon, servicesByCategory, staff, openingHours,
-}: {
-  salon: Salon;
-  servicesByCategory: Record<string, Service[]>;
-  staff: Staff[];
-  openingHours: OpeningHours[];
-}) {
+export function BookingWizard({ salon, servicesByCategory, staff, openingHours }: { salon: Salon; servicesByCategory: Record<string, Service[]>; staff: Staff[]; openingHours: OpeningHours[] }) {
   const [step, setStep] = useState(1);
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [selectedStaff, setSelectedStaff] = useState<Staff | null>(null);
@@ -47,10 +25,7 @@ export function BookingWizard({
   const [submitting, setSubmitting] = useState(false);
   const [bookingComplete, setBookingComplete] = useState(false);
 
-  const availableStaff = selectedService
-    ? staff.filter(s => selectedService.staff.some(ss => ss.staff.id === s.id))
-    : [];
-
+  const availableStaff = selectedService ? staff.filter(s => selectedService.staff.some(ss => ss.staff.id === s.id)) : [];
   const dateOptions = Array.from({ length: 14 }, (_, i) => addDays(new Date(), i));
 
   useEffect(() => {
@@ -79,12 +54,8 @@ export function BookingWizard({
     setSubmitting(true);
     try {
       const res = await fetch("/api/book", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          salonId: salon.id, serviceId: selectedService.id, staffId: selectedSlot.staffId,
-          date: format(selectedDate, "yyyy-MM-dd"), time: selectedSlot.time, ...formData,
-        }),
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ salonId: salon.id, serviceId: selectedService.id, staffId: selectedSlot.staffId, date: format(selectedDate, "yyyy-MM-dd"), time: selectedSlot.time, ...formData }),
       });
       if (res.ok) setBookingComplete(true);
     } catch (err) { console.error(err); }
@@ -94,36 +65,36 @@ export function BookingWizard({
   // ✅ Booking Complete
   if (bookingComplete) {
     return (
-      <div className="bg-white rounded-3xl border p-8 text-center animate-slide-up shadow-lg shadow-black/[0.03]">
-        <div className="w-20 h-20 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-6">
-          <span className="text-4xl">✅</span>
+      <div className="bg-white rounded-2xl border border-border/40 p-7 sm:p-8 text-center shadow-elevated animate-scale-in">
+        <div className="w-16 h-16 rounded-full bg-emerald-50 flex items-center justify-center mx-auto mb-5">
+          <svg className="w-8 h-8 text-emerald-500" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
         </div>
-        <h2 className="text-2xl font-bold mb-2">Afspraak bevestigd!</h2>
-        <p className="text-muted-foreground mb-8">
-          We sturen een bevestiging naar <strong>{formData.email}</strong>
+        <h2 className="text-xl font-bold mb-1.5">Afspraak bevestigd!</h2>
+        <p className="text-sm text-muted-foreground mb-6">
+          We sturen een bevestiging naar <strong className="text-foreground">{formData.email}</strong>
         </p>
         
-        <div className="bg-muted/50 rounded-2xl p-5 text-left mb-8">
-          <div className="space-y-3">
-            {[
-              { l: "Behandeling", v: selectedService?.name },
-              { l: "Datum", v: selectedDate && format(selectedDate, "EEEE d MMMM", { locale: nl }) },
-              { l: "Tijd", v: selectedSlot?.time },
-              { l: "Medewerker", v: selectedSlot?.staffName },
-            ].map(({ l, v }) => (
-              <div key={l} className="flex justify-between text-sm">
-                <span className="text-muted-foreground">{l}</span>
-                <span className="font-medium">{v}</span>
-              </div>
-            ))}
-            <div className="border-t pt-3 flex justify-between">
-              <span className="text-muted-foreground">Prijs</span>
-              <span className="text-xl font-bold gradient-text">€{Number(selectedService?.price).toFixed(2)}</span>
+        <div className="bg-muted/30 rounded-xl p-4 text-left mb-6 space-y-2.5">
+          {[
+            { l: "Behandeling", v: selectedService?.name },
+            { l: "Datum", v: selectedDate && format(selectedDate, "EEEE d MMMM", { locale: nl }) },
+            { l: "Tijd", v: selectedSlot?.time },
+            { l: "Medewerker", v: selectedSlot?.staffName },
+          ].map(({ l, v }) => (
+            <div key={l} className="flex justify-between text-sm">
+              <span className="text-muted-foreground">{l}</span>
+              <span className="font-medium">{v}</span>
             </div>
+          ))}
+          <div className="border-t border-border/40 pt-2.5 flex justify-between items-center">
+            <span className="text-muted-foreground text-sm">Prijs</span>
+            <span className="text-xl font-bold gradient-text">€{Number(selectedService?.price).toFixed(2)}</span>
           </div>
         </div>
 
-        <button onClick={() => window.location.reload()} className="text-violet-600 hover:underline underline-offset-4 text-sm font-medium">
+        <button onClick={() => window.location.reload()} className="text-violet-600 hover:text-violet-700 text-sm font-medium underline underline-offset-4 decoration-violet-200 hover:decoration-violet-400">
           Nog een afspraak maken →
         </button>
       </div>
@@ -131,13 +102,13 @@ export function BookingWizard({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {/* Progress */}
-      <div className="flex gap-2">
+      <div className="flex gap-1.5">
         {STEPS.map((label, i) => (
           <div key={label} className="flex-1">
-            <div className={`h-1.5 rounded-full mb-1.5 transition-all duration-500 ${i + 1 <= step ? "gradient-primary" : "bg-muted"}`} />
-            <span className={`text-[10px] font-medium hidden sm:block ${i + 1 <= step ? "text-violet-600" : "text-muted-foreground"}`}>{label}</span>
+            <div className={`h-1 rounded-full mb-1.5 transition-all duration-500 ${i + 1 <= step ? "gradient-primary" : "bg-border/60"}`} />
+            <span className={`text-[10px] font-medium hidden sm:block ${i + 1 <= step ? "text-violet-600" : "text-muted-foreground/60"}`}>{label}</span>
           </div>
         ))}
       </div>
@@ -146,28 +117,34 @@ export function BookingWizard({
       {step === 1 && (
         <div className="space-y-4 animate-fade-in">
           <div>
-            <h2 className="text-xl font-bold">Wat wil je laten doen?</h2>
-            <p className="text-sm text-muted-foreground">Kies een behandeling</p>
+            <h2 className="text-lg font-bold">Wat wil je laten doen?</h2>
+            <p className="text-xs text-muted-foreground">Kies een behandeling</p>
           </div>
           
           {Object.entries(servicesByCategory).map(([category, services]) => (
             <div key={category}>
-              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 px-1">{category}</h3>
-              <div className="space-y-2">
+              <div className="flex items-center gap-2 mb-2">
+                <h3 className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">{category}</h3>
+                <div className="flex-1 h-px bg-border/30" />
+              </div>
+              <div className="space-y-1.5">
                 {services.map((service) => (
-                  <button
-                    key={service.id}
-                    onClick={() => { setSelectedService(service); setStep(2); }}
-                    className="w-full p-4 rounded-2xl bg-white border hover:border-violet-200 hover:shadow-md hover:shadow-violet-500/5 transition-all text-left flex justify-between items-center group"
-                  >
+                  <button key={service.id} onClick={() => { setSelectedService(service); setStep(2); }}
+                    className="w-full p-4 rounded-xl bg-white border border-border/40 hover:border-violet-200 hover:shadow-medium transition-all text-left flex justify-between items-center group">
                     <div>
-                      <p className="font-semibold group-hover:text-violet-700">{service.name}</p>
-                      {service.description && <p className="text-sm text-muted-foreground mt-0.5">{service.description}</p>}
-                      <p className="text-xs text-muted-foreground mt-1">⏱ {service.duration} min</p>
+                      <p className="font-semibold text-sm group-hover:text-violet-700 transition-colors">{service.name}</p>
+                      {service.description && <p className="text-xs text-muted-foreground mt-0.5">{service.description}</p>}
+                      <p className="text-[10px] text-muted-foreground mt-1 flex items-center gap-1">
+                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        {service.duration} min
+                      </p>
                     </div>
                     <div className="text-right shrink-0 ml-4">
-                      <p className="text-lg font-bold">€{Number(service.price).toFixed(2)}</p>
-                      <span className="text-violet-500 opacity-0 group-hover:opacity-100 transition-opacity text-sm">Kies →</span>
+                      <p className="text-base font-bold tabular-nums">€{Number(service.price).toFixed(2)}</p>
+                      <span className="text-violet-500 opacity-0 group-hover:opacity-100 transition-opacity text-xs flex items-center gap-0.5 justify-end">
+                        Kies
+                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+                      </span>
                     </div>
                   </button>
                 ))}
@@ -180,35 +157,37 @@ export function BookingWizard({
       {/* Step 2: Staff */}
       {step === 2 && selectedService && (
         <div className="space-y-4 animate-fade-in">
-          <button onClick={() => setStep(1)} className="text-sm text-muted-foreground hover:text-violet-600 font-medium">← Terug</button>
+          <button onClick={() => setStep(1)} className="text-xs text-muted-foreground hover:text-violet-600 font-medium flex items-center gap-1">
+            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" /></svg>
+            Terug
+          </button>
           <div>
-            <h2 className="text-xl font-bold">Bij wie wil je?</h2>
-            <p className="text-sm text-muted-foreground">Voor: {selectedService.name}</p>
+            <h2 className="text-lg font-bold">Bij wie wil je?</h2>
+            <p className="text-xs text-muted-foreground">Voor: {selectedService.name}</p>
           </div>
 
-          <div className="space-y-2">
-            <button
-              onClick={() => { setAnyStaff(true); setSelectedStaff(null); setStep(3); }}
-              className="w-full p-4 rounded-2xl bg-white border hover:border-violet-200 hover:shadow-md transition-all text-left flex items-center gap-4 group"
-            >
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-violet-100 to-indigo-100 flex items-center justify-center text-xl">⚡</div>
+          <div className="space-y-1.5">
+            <button onClick={() => { setAnyStaff(true); setSelectedStaff(null); setStep(3); }}
+              className="w-full p-4 rounded-xl bg-white border border-border/40 hover:border-violet-200 hover:shadow-medium transition-all text-left flex items-center gap-3 group">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-100 to-indigo-100 flex items-center justify-center shrink-0">
+                <svg className="w-5 h-5 text-violet-500" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                </svg>
+              </div>
               <div>
-                <p className="font-semibold group-hover:text-violet-700">Eerste beschikbaar</p>
-                <p className="text-sm text-muted-foreground">Snelste beschikbare tijd</p>
+                <p className="font-semibold text-sm group-hover:text-violet-700 transition-colors">Eerste beschikbaar</p>
+                <p className="text-xs text-muted-foreground">Snelste beschikbare tijd</p>
               </div>
             </button>
 
             {availableStaff.map((member) => (
-              <button
-                key={member.id}
-                onClick={() => { setSelectedStaff(member); setAnyStaff(false); setStep(3); }}
-                className="w-full p-4 rounded-2xl bg-white border hover:border-violet-200 hover:shadow-md transition-all text-left flex items-center gap-4 group"
-              >
-                <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-white font-bold text-lg shadow-sm" style={{ backgroundColor: member.color || "#8B5CF6" }}>
+              <button key={member.id} onClick={() => { setSelectedStaff(member); setAnyStaff(false); setStep(3); }}
+                className="w-full p-4 rounded-xl bg-white border border-border/40 hover:border-violet-200 hover:shadow-medium transition-all text-left flex items-center gap-3 group">
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-sm shadow-sm shrink-0" style={{ backgroundColor: member.color || "#8B5CF6" }}>
                   {member.displayName.charAt(0)}
                 </div>
                 <div>
-                  <p className="font-semibold group-hover:text-violet-700">{member.displayName}</p>
+                  <p className="font-semibold text-sm group-hover:text-violet-700 transition-colors">{member.displayName}</p>
                 </div>
               </button>
             ))}
@@ -219,33 +198,32 @@ export function BookingWizard({
       {/* Step 3: Date & Time */}
       {step === 3 && selectedService && (
         <div className="space-y-4 animate-fade-in">
-          <button onClick={() => setStep(2)} className="text-sm text-muted-foreground hover:text-violet-600 font-medium">← Terug</button>
+          <button onClick={() => setStep(2)} className="text-xs text-muted-foreground hover:text-violet-600 font-medium flex items-center gap-1">
+            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" /></svg>
+            Terug
+          </button>
           <div>
-            <h2 className="text-xl font-bold">Wanneer past het?</h2>
-            <p className="text-sm text-muted-foreground">{selectedService.name} {!anyStaff && selectedStaff && `met ${selectedStaff.displayName}`}</p>
+            <h2 className="text-lg font-bold">Wanneer past het?</h2>
+            <p className="text-xs text-muted-foreground">{selectedService.name} {!anyStaff && selectedStaff && `met ${selectedStaff.displayName}`}</p>
           </div>
 
           {/* Date Picker */}
-          <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1 scrollbar-none">
+          <div className="flex gap-1.5 overflow-x-auto pb-2 -mx-1 px-1 scrollbar-none">
             {dateOptions.map((date) => {
               const closed = isDayClosed(date);
               const selected = selectedDate && isSameDay(date, selectedDate);
               const isToday = isSameDay(date, new Date());
               return (
-                <button
-                  key={date.toISOString()}
-                  onClick={() => !closed && setSelectedDate(date)}
-                  disabled={closed}
-                  className={`flex-shrink-0 p-3 rounded-2xl text-center min-w-[72px] border-2 transition-all ${
+                <button key={date.toISOString()} onClick={() => !closed && setSelectedDate(date)} disabled={closed}
+                  className={`flex-shrink-0 px-2.5 py-2 rounded-xl text-center min-w-[60px] border transition-all ${
                     selected ? "border-violet-500 bg-violet-500 text-white shadow-lg shadow-violet-500/25" :
-                    closed ? "border-transparent bg-muted/50 text-muted-foreground/40 cursor-not-allowed" :
+                    closed ? "border-transparent bg-muted/30 text-muted-foreground/30 cursor-not-allowed" :
                     isToday ? "border-violet-200 bg-violet-50 hover:bg-violet-100" :
-                    "border-transparent bg-white hover:border-violet-200"
-                  }`}
-                >
-                  <p className="text-[10px] uppercase font-semibold tracking-wider opacity-70">{format(date, "EEE", { locale: nl })}</p>
-                  <p className="text-xl font-bold my-0.5">{format(date, "d")}</p>
-                  <p className="text-[10px] opacity-70">{format(date, "MMM", { locale: nl })}</p>
+                    "border-border/30 bg-white hover:border-violet-200 hover:bg-violet-50/30"
+                  }`}>
+                  <p className={`text-[9px] uppercase font-semibold tracking-wider ${selected ? "text-white/80" : "opacity-60"}`}>{format(date, "EEE", { locale: nl })}</p>
+                  <p className="text-lg font-bold my-px tabular-nums">{format(date, "d")}</p>
+                  <p className={`text-[9px] ${selected ? "text-white/70" : "opacity-50"}`}>{format(date, "MMM", { locale: nl })}</p>
                 </button>
               );
             })}
@@ -254,29 +232,26 @@ export function BookingWizard({
           {/* Time Slots */}
           {selectedDate && (
             <div>
-              <h3 className="font-semibold mb-3">Beschikbare tijden</h3>
+              <h3 className="font-semibold text-sm mb-2.5">Beschikbare tijden</h3>
               {loadingSlots ? (
-                <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-                  {Array.from({ length: 8 }).map((_, i) => (
-                    <div key={i} className="h-12 rounded-xl bg-muted animate-pulse" />
-                  ))}
+                <div className="grid grid-cols-3 sm:grid-cols-4 gap-1.5">
+                  {Array.from({ length: 8 }).map((_, i) => <div key={i} className="h-11 rounded-xl bg-muted/60 animate-pulse" />)}
                 </div>
               ) : availableSlots.length === 0 ? (
-                <div className="text-center py-10 text-muted-foreground">
-                  <span className="text-3xl block mb-2">😔</span>
-                  <p className="font-medium">Geen beschikbare tijden</p>
-                  <p className="text-sm">Probeer een andere dag</p>
+                <div className="text-center py-8 text-muted-foreground">
+                  <svg className="w-8 h-8 mx-auto mb-2 text-muted-foreground/40" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <p className="font-medium text-sm">Geen beschikbare tijden</p>
+                  <p className="text-xs mt-0.5">Probeer een andere dag</p>
                 </div>
               ) : (
-                <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                <div className="grid grid-cols-3 sm:grid-cols-4 gap-1.5">
                   {availableSlots.map((slot, i) => (
-                    <button
-                      key={i}
-                      onClick={() => { setSelectedSlot(slot); setStep(4); }}
-                      className="py-3 px-2 rounded-xl bg-white border hover:border-violet-300 hover:bg-violet-50 transition-all text-center group"
-                    >
-                      <p className="font-semibold group-hover:text-violet-700">{slot.time}</p>
-                      {anyStaff && <p className="text-[10px] text-muted-foreground mt-0.5">{slot.staffName}</p>}
+                    <button key={i} onClick={() => { setSelectedSlot(slot); setStep(4); }}
+                      className="py-2.5 px-2 rounded-xl bg-white border border-border/40 hover:border-violet-300 hover:bg-violet-50 transition-all text-center group">
+                      <p className="font-semibold text-sm group-hover:text-violet-700 tabular-nums">{slot.time}</p>
+                      {anyStaff && <p className="text-[9px] text-muted-foreground mt-0.5">{slot.staffName}</p>}
                     </button>
                   ))}
                 </div>
@@ -288,62 +263,75 @@ export function BookingWizard({
 
       {/* Step 4: Details */}
       {step === 4 && selectedService && selectedSlot && selectedDate && (
-        <div className="space-y-5 animate-fade-in">
-          <button onClick={() => setStep(3)} className="text-sm text-muted-foreground hover:text-violet-600 font-medium">← Terug</button>
+        <div className="space-y-4 animate-fade-in">
+          <button onClick={() => setStep(3)} className="text-xs text-muted-foreground hover:text-violet-600 font-medium flex items-center gap-1">
+            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" /></svg>
+            Terug
+          </button>
           <div>
-            <h2 className="text-xl font-bold">Bijna klaar!</h2>
-            <p className="text-sm text-muted-foreground">Vul je gegevens in om te bevestigen</p>
+            <h2 className="text-lg font-bold">Bijna klaar!</h2>
+            <p className="text-xs text-muted-foreground">Vul je gegevens in om te bevestigen</p>
           </div>
 
-          {/* Summary */}
-          <div className="bg-violet-50 rounded-2xl p-4 border border-violet-100">
+          {/* Summary Card */}
+          <div className="bg-violet-50/60 rounded-xl p-4 border border-violet-100/50">
             <div className="flex justify-between items-start">
               <div>
-                <p className="font-semibold">{selectedService.name}</p>
-                <p className="text-sm text-violet-700">{format(selectedDate, "EEEE d MMMM", { locale: nl })} om {selectedSlot.time}</p>
-                <p className="text-sm text-violet-600/70">met {selectedSlot.staffName}</p>
+                <p className="font-semibold text-sm">{selectedService.name}</p>
+                <p className="text-xs text-violet-700 mt-0.5">{format(selectedDate, "EEEE d MMMM", { locale: nl })} om {selectedSlot.time}</p>
+                <p className="text-xs text-violet-600/60">met {selectedSlot.staffName}</p>
               </div>
-              <p className="text-xl font-bold text-violet-700">€{Number(selectedService.price).toFixed(2)}</p>
+              <p className="text-lg font-bold text-violet-700 tabular-nums">€{Number(selectedService.price).toFixed(2)}</p>
             </div>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-3">
             <div>
-              <label className="block text-sm font-medium mb-2">Naam *</label>
+              <label className="block text-sm font-medium mb-1.5">Naam *</label>
               <input type="text" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} required
-                className="w-full px-4 py-3 rounded-xl border bg-white placeholder:text-muted-foreground/50" placeholder="Je naam" />
+                className="w-full px-4 py-3 rounded-xl border border-border/80 bg-white hover:border-border text-sm" placeholder="Je naam" />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2">Email *</label>
+              <label className="block text-sm font-medium mb-1.5">Email *</label>
               <input type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} required
-                className="w-full px-4 py-3 rounded-xl border bg-white placeholder:text-muted-foreground/50" placeholder="je@email.nl" />
+                className="w-full px-4 py-3 rounded-xl border border-border/80 bg-white hover:border-border text-sm" placeholder="je@email.nl" />
             </div>
-            <div>
-              <label className="block text-sm font-medium mb-2">Telefoon <span className="text-muted-foreground font-normal">(optioneel)</span></label>
-              <input type="tel" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                className="w-full px-4 py-3 rounded-xl border bg-white placeholder:text-muted-foreground/50" placeholder="06 12345678" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-2">Opmerkingen <span className="text-muted-foreground font-normal">(optioneel)</span></label>
-              <textarea value={formData.notes} onChange={(e) => setFormData({ ...formData, notes: e.target.value })} rows={2}
-                className="w-full px-4 py-3 rounded-xl border bg-white placeholder:text-muted-foreground/50 resize-none" placeholder="Eventuele wensen" />
+            <div className="grid grid-cols-2 gap-2.5">
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="text-sm font-medium">Telefoon</label>
+                  <span className="text-[10px] text-muted-foreground">optioneel</span>
+                </div>
+                <input type="tel" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  className="w-full px-4 py-3 rounded-xl border border-border/80 bg-white hover:border-border text-sm" placeholder="06 ..." />
+              </div>
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="text-sm font-medium">Opmerkingen</label>
+                  <span className="text-[10px] text-muted-foreground">optioneel</span>
+                </div>
+                <input type="text" value={formData.notes} onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                  className="w-full px-4 py-3 rounded-xl border border-border/80 bg-white hover:border-border text-sm" placeholder="Wensen" />
+              </div>
             </div>
           </div>
 
-          <button
-            onClick={handleSubmit}
-            disabled={submitting || !formData.name || !formData.email}
-            className="w-full py-4 rounded-2xl gradient-primary text-white font-semibold text-lg hover:opacity-90 disabled:opacity-50 shadow-xl shadow-violet-500/25"
-          >
+          <button onClick={handleSubmit} disabled={submitting || !formData.name || !formData.email}
+            className="w-full py-3.5 rounded-2xl gradient-primary text-white font-semibold hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed shadow-xl shadow-violet-500/25 hover:shadow-violet-500/35 hover:-translate-y-px active:translate-y-0 flex items-center justify-center gap-2">
             {submitting ? (
-              <span className="flex items-center justify-center gap-2">
-                <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+              <>
+                <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
                 Bezig met boeken...
-              </span>
-            ) : "Afspraak Bevestigen ✓"}
+              </>
+            ) : (
+              <>
+                Afspraak Bevestigen
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+              </>
+            )}
           </button>
 
-          <p className="text-xs text-center text-muted-foreground">Je ontvangt een bevestiging per email</p>
+          <p className="text-[10px] text-center text-muted-foreground">Je ontvangt een bevestiging per email</p>
         </div>
       )}
     </div>

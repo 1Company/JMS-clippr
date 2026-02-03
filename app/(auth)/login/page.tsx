@@ -42,21 +42,25 @@ function LoginForm() {
   return (
     <>
       {registered && (
-        <div className="mb-6 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm text-center animate-slide-up">
-          ✅ Account aangemaakt! Log hieronder in.
+        <div className="mb-6 p-4 rounded-xl bg-emerald-50 border border-emerald-200/60 text-emerald-700 text-sm text-center animate-slide-up flex items-center justify-center gap-2">
+          <svg className="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+          Account aangemaakt! Log hieronder in.
         </div>
       )}
 
-      <div className="glass-card rounded-3xl p-8">
+      <div className="bg-white rounded-2xl border border-border/60 shadow-elevated p-7 sm:p-8">
         <form onSubmit={handleSubmit} className="space-y-5">
           {error && (
-            <div className="p-4 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-sm animate-slide-up">
+            <div className="p-3.5 rounded-xl bg-red-50 border border-red-200/60 text-red-600 text-sm animate-slide-up flex items-center gap-2">
+              <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+              </svg>
               {error}
             </div>
           )}
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium mb-2 text-foreground/80">
+            <label htmlFor="email" className="block text-sm font-medium mb-2">
               Emailadres
             </label>
             <input
@@ -66,21 +70,24 @@ function LoginForm() {
               onChange={(e) => setEmail(e.target.value)}
               required
               autoFocus
-              className="w-full px-4 py-3 rounded-xl border bg-white/50 focus:bg-white placeholder:text-muted-foreground/50"
+              className="w-full px-4 py-3 rounded-xl border border-border/80 bg-white focus:bg-white hover:border-border"
               placeholder="jouw@email.nl"
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium mb-2 text-foreground/80">
-              Wachtwoord <span className="text-muted-foreground font-normal">(optioneel)</span>
-            </label>
+            <div className="flex items-center justify-between mb-2">
+              <label htmlFor="password" className="text-sm font-medium">
+                Wachtwoord
+              </label>
+              <span className="text-xs text-muted-foreground">optioneel</span>
+            </div>
             <input
               id="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border bg-white/50 focus:bg-white placeholder:text-muted-foreground/50"
+              className="w-full px-4 py-3 rounded-xl border border-border/80 bg-white focus:bg-white hover:border-border"
               placeholder="••••••••"
             />
           </div>
@@ -88,13 +95,13 @@ function LoginForm() {
           <button
             type="submit"
             disabled={loading || !email}
-            className="w-full py-3.5 px-4 rounded-xl gradient-primary text-white font-semibold hover:opacity-90 disabled:opacity-50 shadow-lg shadow-violet-500/20"
+            className="w-full py-3.5 px-4 rounded-xl gradient-primary text-white font-semibold hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-violet-500/20 hover:shadow-violet-500/30 hover:-translate-y-px active:translate-y-0 flex items-center justify-center gap-2"
           >
             {loading ? (
-              <span className="flex items-center justify-center gap-2">
+              <>
                 <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
                 Even geduld...
-              </span>
+              </>
             ) : "Inloggen"}
           </button>
         </form>
@@ -105,34 +112,42 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <main className="min-h-screen flex items-center justify-center p-6 gradient-subtle relative overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute top-20 right-20 w-96 h-96 bg-violet-200/30 rounded-full blur-3xl" />
-      <div className="absolute bottom-20 left-20 w-80 h-80 bg-indigo-200/20 rounded-full blur-3xl" />
+    <main className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden">
+      {/* Background */}
+      <div className="absolute inset-0 gradient-mesh" />
+      <div className="absolute inset-0 gradient-subtle" />
 
-      <div className="w-full max-w-md relative">
-        <div className="text-center mb-8">
-          <Link href="/" className="inline-block text-3xl font-bold tracking-tight mb-3">
+      <div className="w-full max-w-[420px] relative">
+        <div className="text-center mb-8 animate-fade-in-up">
+          <Link href="/" className="inline-block text-2xl font-bold tracking-tight mb-2">
             <span className="gradient-text">✂️ Clippr</span>
           </Link>
-          <p className="text-muted-foreground">Welkom terug bij je salon</p>
+          <p className="text-muted-foreground text-sm">Welkom terug bij je salon</p>
         </div>
 
-        <Suspense fallback={
-          <div className="glass-card rounded-3xl p-8">
-            <div className="space-y-5">
-              <div className="h-12 bg-muted rounded-xl animate-pulse" />
-              <div className="h-12 bg-muted rounded-xl animate-pulse" />
-              <div className="h-12 bg-muted rounded-xl animate-pulse" />
+        <div className="animate-fade-in-up" style={{ animationDelay: '100ms' }}>
+          <Suspense fallback={
+            <div className="bg-white rounded-2xl border border-border/60 shadow-elevated p-7 sm:p-8">
+              <div className="space-y-5">
+                <div className="space-y-2">
+                  <div className="h-4 w-20 bg-muted rounded animate-pulse" />
+                  <div className="h-12 bg-muted rounded-xl animate-pulse" />
+                </div>
+                <div className="space-y-2">
+                  <div className="h-4 w-20 bg-muted rounded animate-pulse" />
+                  <div className="h-12 bg-muted rounded-xl animate-pulse" />
+                </div>
+                <div className="h-12 bg-muted rounded-xl animate-pulse" />
+              </div>
             </div>
-          </div>
-        }>
-          <LoginForm />
-        </Suspense>
+          }>
+            <LoginForm />
+          </Suspense>
+        </div>
 
-        <p className="text-center text-sm text-muted-foreground mt-6">
+        <p className="text-center text-sm text-muted-foreground mt-6 animate-fade-in-up" style={{ animationDelay: '200ms' }}>
           Nog geen account?{" "}
-          <Link href="/register" className="text-violet-600 font-medium hover:text-violet-700 hover:underline underline-offset-4">
+          <Link href="/register" className="text-violet-600 font-medium hover:text-violet-700 underline underline-offset-4 decoration-violet-200 hover:decoration-violet-400">
             Registreer je salon
           </Link>
         </p>
