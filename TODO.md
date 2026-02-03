@@ -15,14 +15,17 @@
 
 ## 🎯 MVP Scope (Target: 4-6 weken)
 
-### Fase 1: Foundation (Week 1) ⬜
+### Fase 1: Foundation (Week 1) ✅
 - [x] Repo aanmaken
 - [x] Project structuur opzetten
 - [x] Database schema ontwerpen (Prisma)
-- [ ] Next.js 14 project initialiseren
-- [ ] Tailwind CSS + shadcn/ui setup
-- [ ] Database connectie (Neon PostgreSQL)
-- [ ] Basis auth setup (NextAuth)
+- [x] Next.js 14 project initialiseren
+- [x] Tailwind CSS + shadcn/ui setup
+- [x] Database connectie (Neon PostgreSQL)
+- [x] Basis auth setup (NextAuth)
+- [x] Login/Register pages
+- [x] Dashboard layout
+- [x] Onboarding flow
 
 ### Fase 2: Beheerder Backend (Week 2) ⬜
 - [ ] Salon onboarding flow
