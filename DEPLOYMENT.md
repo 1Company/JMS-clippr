@@ -33,12 +33,6 @@ Set these in Vercel → Project → Settings → Environment Variables:
 | `SMTP2GO_API_KEY` | SMTP2GO API key | `api-xxxxxxxxxxxxx` |
 | `EMAIL_FROM` | Sender email address | `Clippr <noreply@clippr.nl>` |
 
-### Optional (Cron)
-
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `CRON_SECRET` | Secret to protect cron endpoints | Generate with: `openssl rand -base64 32` |
-
 ---
 
 ## 3. Database Setup
@@ -105,15 +99,21 @@ vercel --prod
    - `SMTP2GO_API_KEY` = jouw API key
    - `EMAIL_FROM` = `Salon Naam <noreply@jouwdomein.nl>`
 
-### Cron Jobs
-Vercel automatically runs the cron defined in `vercel.json`:
-- **Reminders**: Daily at 8:00 UTC (`/api/cron/reminders`)
+### Reminders (Optioneel)
+De reminder API is beschikbaar op `/api/cron/reminders`.
 
-To test manually:
+**Optie 1: Handmatig triggeren**
 ```bash
-curl https://your-domain.vercel.app/api/cron/reminders \
-  -H "Authorization: Bearer YOUR_CRON_SECRET"
+curl https://your-domain.vercel.app/api/cron/reminders
 ```
+
+**Optie 2: Externe cron service (gratis)**
+Gebruik [cron-job.org](https://cron-job.org) om dagelijks te triggeren:
+- URL: `https://your-domain.vercel.app/api/cron/reminders`
+- Schedule: `0 8 * * *` (elke dag 8:00)
+
+**Optie 3: Vercel Pro**
+Met Vercel Pro kun je crons toevoegen aan `vercel.json`.
 
 ---
 
@@ -128,9 +128,6 @@ NEXTAUTH_URL="https://clippr.nl"
 # === EMAIL (SMTP2GO) ===
 SMTP2GO_API_KEY="api-xxxxxxxxxxxxxxxx"
 EMAIL_FROM="Clippr <noreply@clippr.nl>"
-
-# === OPTIONAL: Cron Protection ===
-CRON_SECRET="another-random-secret"
 ```
 
 ---
