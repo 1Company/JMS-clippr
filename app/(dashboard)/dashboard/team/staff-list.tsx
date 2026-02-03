@@ -5,16 +5,16 @@ import { useRouter } from "next/navigation";
 
 type Vacation = {
   id: string;
-  startDate: string;
-  endDate: string;
+  startDate: Date | string;
+  endDate: Date | string;
   reason: string | null;
 };
 
 type SickLeave = {
   id: string;
-  startDate: string;
-  endDate: string | null;
-  expectedReturn: string | null;
+  startDate: Date | string;
+  endDate: Date | string | null;
+  expectedReturn: Date | string | null;
   notes: string | null;
 };
 
@@ -116,8 +116,9 @@ export function StaffList({
     router.refresh();
   };
 
-  const formatDate = (date: string) => {
-    return new Date(date).toLocaleDateString("nl-NL", { day: "numeric", month: "short" });
+  const formatDate = (date: Date | string) => {
+    const d = typeof date === "string" ? new Date(date) : date;
+    return d.toLocaleDateString("nl-NL", { day: "numeric", month: "short" });
   };
 
   return (
