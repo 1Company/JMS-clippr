@@ -1,6 +1,15 @@
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// SMTP2GO Configuration
+const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST || "mail.smtp2go.com",
+  port: parseInt(process.env.SMTP_PORT || "2525"),
+  secure: false, // true for 465, false for other ports
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
+  },
+});
 
 const FROM_EMAIL = process.env.EMAIL_FROM || "Clippr <noreply@clippr.nl>";
 
@@ -19,13 +28,13 @@ export type BookingEmailData = {
 };
 
 export async function sendBookingConfirmation(data: BookingEmailData) {
-  if (!process.env.RESEND_API_KEY) {
-    console.log("[Email] Skipped: No RESEND_API_KEY configured");
-    return { success: false, reason: "no_api_key" };
+  if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
+    console.log("[Email] Skipped: No SMTP credentials configured");
+    return { success: false, reason: "no_credentials" };
   }
 
   try {
-    const { data: result, error } = await resend.emails.send({
+    const result = await transporter.sendMail({
       from: FROM_EMAIL,
       to: data.customerEmail,
       subject: `Bevestiging: ${data.serviceName} bij ${data.salonName}`,
@@ -96,27 +105,22 @@ export async function sendBookingConfirmation(data: BookingEmailData) {
       `,
     });
 
-    if (error) {
-      console.error("[Email] Error:", error);
-      return { success: false, error };
-    }
-
-    console.log("[Email] Sent confirmation to", data.customerEmail);
-    return { success: true, id: result?.id };
+    console.log("[Email] Sent confirmation to", data.customerEmail, result.messageId);
+    return { success: true, id: result.messageId };
   } catch (error) {
-    console.error("[Email] Exception:", error);
+    console.error("[Email] Error:", error);
     return { success: false, error };
   }
 }
 
 export async function sendBookingReminder(data: BookingEmailData) {
-  if (!process.env.RESEND_API_KEY) {
-    console.log("[Email] Skipped reminder: No RESEND_API_KEY configured");
-    return { success: false, reason: "no_api_key" };
+  if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
+    console.log("[Email] Skipped reminder: No SMTP credentials configured");
+    return { success: false, reason: "no_credentials" };
   }
 
   try {
-    const { data: result, error } = await resend.emails.send({
+    const result = await transporter.sendMail({
       from: FROM_EMAIL,
       to: data.customerEmail,
       subject: `Herinnering: Morgen ${data.time} - ${data.serviceName}`,
@@ -164,25 +168,21 @@ export async function sendBookingReminder(data: BookingEmailData) {
       `,
     });
 
-    if (error) {
-      console.error("[Email] Reminder error:", error);
-      return { success: false, error };
-    }
-
-    return { success: true, id: result?.id };
+    console.log("[Email] Sent reminder to", data.customerEmail);
+    return { success: true, id: result.messageId };
   } catch (error) {
-    console.error("[Email] Reminder exception:", error);
+    console.error("[Email] Reminder error:", error);
     return { success: false, error };
   }
 }
 
 export async function sendBookingCancellation(data: BookingEmailData & { reason?: string }) {
-  if (!process.env.RESEND_API_KEY) {
-    return { success: false, reason: "no_api_key" };
+  if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
+    return { success: false, reason: "no_credentials" };
   }
 
   try {
-    const { data: result, error } = await resend.emails.send({
+    const result = await transporter.sendMail({
       from: FROM_EMAIL,
       to: data.customerEmail,
       subject: `Afspraak geannuleerd - ${data.salonName}`,
@@ -214,9 +214,21 @@ export async function sendBookingCancellation(data: BookingEmailData & { reason?
       `,
     });
 
-    if (error) return { success: false, error };
-    return { success: true, id: result?.id };
+    return { success: true, id: result.messageId };
   } catch (error) {
+    console.error("[Email] Cancellation error:", error);
     return { success: false, error };
+  }
+}
+
+// Verify SMTP connection on startup (optional)
+export async function verifyEmailConnection() {
+  try {
+    await transporter.verify();
+    console.log("[Email] SMTP connection verified");
+    return true;
+  } catch (error) {
+    console.error("[Email] SMTP connection failed:", error);
+    return false;
   }
 }

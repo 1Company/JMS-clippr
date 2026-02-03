@@ -26,11 +26,14 @@ Set these in Vercel → Project → Settings → Environment Variables:
 | `NEXTAUTH_SECRET` | Random secret for auth sessions | Generate with: `openssl rand -base64 32` |
 | `NEXTAUTH_URL` | Your production URL | `https://clippr.nl` |
 
-### Optional (Email)
+### Email (SMTP2GO)
 
 | Variable | Description | Example |
 |----------|-------------|---------|
-| `RESEND_API_KEY` | Resend API key for emails | `re_xxxxxxxxxxxxx` |
+| `SMTP_HOST` | SMTP server | `mail.smtp2go.com` |
+| `SMTP_PORT` | SMTP port | `2525` (or `587`, `465`) |
+| `SMTP_USER` | SMTP2GO username | `your-smtp2go-username` |
+| `SMTP_PASS` | SMTP2GO password | `your-smtp2go-password` |
 | `EMAIL_FROM` | Sender email address | `Clippr <noreply@clippr.nl>` |
 
 ### Optional (Cron)
@@ -98,11 +101,16 @@ vercel --prod
 3. Update DNS records
 4. Update `NEXTAUTH_URL` to match
 
-### Email Setup (Resend)
-1. Create account at [resend.com](https://resend.com)
-2. Verify your domain (for custom from address)
-3. Create API key
-4. Add `RESEND_API_KEY` to Vercel
+### Email Setup (SMTP2GO)
+1. Create account at [smtp2go.com](https://www.smtp2go.com)
+2. Go to Settings → SMTP Users → Add SMTP User
+3. Note your username and password
+4. Add to Vercel:
+   - `SMTP_HOST` = `mail.smtp2go.com`
+   - `SMTP_PORT` = `2525`
+   - `SMTP_USER` = your username
+   - `SMTP_PASS` = your password
+   - `EMAIL_FROM` = `Salon Naam <noreply@jouwdomein.nl>`
 
 ### Cron Jobs
 Vercel automatically runs the cron defined in `vercel.json`:
@@ -124,8 +132,11 @@ DATABASE_URL="postgresql://neondb_owner:xxx@ep-xxx.neon.tech/neondb?sslmode=requ
 NEXTAUTH_SECRET="your-random-secret-here"
 NEXTAUTH_URL="https://clippr.nl"
 
-# === OPTIONAL: Email ===
-RESEND_API_KEY="re_xxxxxxxxxxxx"
+# === EMAIL (SMTP2GO) ===
+SMTP_HOST="mail.smtp2go.com"
+SMTP_PORT="2525"
+SMTP_USER="your-smtp2go-username"
+SMTP_PASS="your-smtp2go-password"
 EMAIL_FROM="Clippr <noreply@clippr.nl>"
 
 # === OPTIONAL: Cron Protection ===
@@ -171,9 +182,10 @@ After deployment:
 - Check `NEXTAUTH_URL` matches your domain
 
 ### "Emails not sending"
-- Verify `RESEND_API_KEY` is valid
-- Check Resend dashboard for errors
-- Verify domain if using custom from address
+- Check SMTP2GO dashboard for errors
+- Verify `SMTP_USER` and `SMTP_PASS` are correct
+- Check if sender domain is verified in SMTP2GO
+- Test with port `587` if `2525` doesn't work
 
 ---
 
