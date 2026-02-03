@@ -27,18 +27,18 @@
 - [x] Dashboard layout
 - [x] Onboarding flow
 
-### Fase 2: Beheerder Backend (Week 2) ⬜
-- [ ] Salon onboarding flow
-- [ ] Medewerkers CRUD
-  - [ ] Naam, email, telefoon
-  - [ ] Werkrooster per dag
-  - [ ] Foto upload
-- [ ] Behandelingen CRUD
-  - [ ] Naam, beschrijving, duur, prijs
-  - [ ] Categorie (knippen, kleuren, nagels, etc.)
-- [ ] Medewerker-Behandeling koppelingen
-  - [ ] Wie kan welke behandeling
-  - [ ] Optioneel: aangepaste duur per medewerker
+### Fase 2: Beheerder Backend (Week 2) ✅
+- [x] Salon onboarding flow
+- [x] Medewerkers CRUD
+  - [x] Naam, telefoon, kleur
+  - [x] Werkrooster per dag
+  - [ ] Foto upload (later)
+- [x] Behandelingen CRUD
+  - [x] Naam, beschrijving, duur, prijs
+  - [x] Categorie (knippen, kleuren, nagels, etc.)
+- [x] Medewerker-Behandeling koppelingen
+  - [x] Wie kan welke behandeling
+  - [ ] Optioneel: aangepaste duur per medewerker (later)
 
 ### Fase 3: Beschikbaarheid (Week 2-3) ⬜
 - [ ] Werkrooster beheer
